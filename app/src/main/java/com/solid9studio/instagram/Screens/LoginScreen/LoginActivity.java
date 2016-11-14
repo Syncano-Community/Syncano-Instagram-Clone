@@ -1,20 +1,24 @@
-package com.solid9studio.instagram;
+package com.solid9studio.instagram.screens.LoginScreen;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.solid9studio.instagram.BaseActivity;
+import com.solid9studio.instagram.R;
+import com.solid9studio.instagram.screens.PostListScreen.PostListActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +43,11 @@ public class LoginActivity extends BaseActivity {
     View mLoginFormView;
 
     private UserLoginTask mAuthTask;
+
+    public static Intent getActivityIntent(Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +171,10 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
+    private void goToPostList() {
+        startActivity(PostListActivity.getActivityIntent(this));
+    }
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -197,7 +210,8 @@ public class LoginActivity extends BaseActivity {
             showProgress(false);
 
             if (success) {
-                finish();
+                //finish();
+                goToPostList();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
