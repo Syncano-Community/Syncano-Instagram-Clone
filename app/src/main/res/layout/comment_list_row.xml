@@ -3,19 +3,28 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/text_margin"
-    android:background="@color/colorPrimaryDark">
+    android:paddingTop="@dimen/text_margin"
+    android:paddingLeft="@dimen/text_margin"
+    android:paddingRight="@dimen/text_margin"
+    android:background="@color/comment_background">
+
+    <TextView
+        android:id="@+id/comment_user"
+        android:text="Author"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/author_name"/>
 
     <TextView
         android:id="@+id/comment_text"
         android:text="Post content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"/>
+        android:layout_marginBottom="@dimen/text_margin"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorAccent"/>
+        android:background="@color/comment_separator"/>
 
 </LinearLayout>

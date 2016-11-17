@@ -22,7 +22,8 @@
             android:id="@+id/post_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Author"/>
+            android:text="Author"
+            android:textColor="@color/author_name"/>
 
         <View
             android:layout_width="0dp"
@@ -33,7 +34,8 @@
             android:id="@+id/post_time_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="11.11.2011 11:11"/>
+            android:text="11.11.2011 11:11"
+            android:textColor="@color/author_name"/>
 
     </LinearLayout>
 

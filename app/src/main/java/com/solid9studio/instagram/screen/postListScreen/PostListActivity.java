@@ -53,13 +53,13 @@ public class PostListActivity extends BaseActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 downloadPosts();
             }
         });
+        downloadPosts();
     }
 
     @OnClick(R.id.fab)
