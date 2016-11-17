@@ -1,4 +1,4 @@
-package com.solid9studio.instagram.screen.postListScreen;
+package com.solid9studio.instagram.screen.postScreen;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.solid9studio.instagram.R;
-import com.solid9studio.instagram.model.Post;
 import com.solid9studio.instagram.Row;
+import com.solid9studio.instagram.model.Comment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,32 +17,32 @@ import butterknife.ButterKnife;
  * Created by d.czlonka on 16/11/16.
  */
 
-public class PostRow extends Row {
+public class CommentRow extends Row {
 
-    private Post post;
+    private Comment comment;
 
-    public PostRow(long id, Post post) {
+    public CommentRow(long id, Comment comment) {
         super(id);
-        this.post = post;
+        this.comment = comment;
     }
 
     public static RecyclerView.ViewHolder makeViewHolder(ViewGroup parent) {
         return new ViewHolder(
-                LayoutInflater.from(parent.getContext()).inflate(R.layout.post_list_row, parent, false));
+                LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_list_row, parent, false));
     }
 
     @Override
     public void bindView(RecyclerView.ViewHolder holder) {
         ViewHolder h = (ViewHolder) holder;
-        h.topView.setTag(post);
+        h.topView.setTag(comment);
 
-        h.text.setText(post.getText());
+        h.text.setText(comment.getText());
     }
 
     // ==================== ViewHolder ==================== //
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.post_caption)
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.comment_text)
         TextView text;
 
         View topView;
@@ -50,18 +50,7 @@ public class PostRow extends Row {
         public ViewHolder(View itemView) {
             super(itemView);
             topView = itemView;
-            topView.setOnClickListener(this);
             ButterKnife.bind(this, itemView);
-        }
-
-        @Override
-        public void onClick(View v) {
-//            Match match = (Match) v.getTag();
-//            if (match == null) {
-//                return;
-//            }
-//
-//            EventBus.getDefault().post(new MatchSelectedEvent(match));
         }
     }
 }

@@ -4,19 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.model.Comment;
 import com.solid9studio.instagram.model.Post;
-import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -26,35 +24,19 @@ import butterknife.ButterKnife;
 public class PostActivity extends BaseActivity {
 
     public static final String EXTRA_POST_ID = "EXTRA_POST_ID";
-    public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm");
 
     @BindView(R.id.download_progress)
     ProgressBar downloadProgress;
 
-    @BindView(R.id.post_container)
-    View postContainer;
+    @BindView(R.id.swipe_to_refresh)
+    SwipeRefreshLayout swipeRefreshLayout;
 
-    @BindView(R.id.post_user_avatar)
-    ImageView userAvatar;
-
-    @BindView(R.id.post_user_name)
-    TextView userName;
-
-    @BindView(R.id.post_time_text)
-    TextView timeText;
-
-    @BindView(R.id.post_image)
-    ImageView postImage;
-
-    @BindView(R.id.post_caption)
-    TextView postCaption;
-
-    SwipeRefreshLayout swipeRefreshComments;
-
-    RecyclerView commentList;
+    @BindView(R.id.content_list)
+    RecyclerView recyclerView;
 
     private long postId;
     private Post post;
+    private PostContentAdapter adapter = new PostContentAdapter();
 
     public static Intent getActivityIntent(Context context, long postId) {
         Intent intent = new Intent(context, PostActivity.class);
@@ -69,6 +51,17 @@ public class PostActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         postId = getIntent().getExtras().getLong(EXTRA_POST_ID);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                downloadPost(postId);
+            }
+        });
+
         downloadPost(postId);
     }
 
@@ -88,18 +81,24 @@ public class PostActivity extends BaseActivity {
     }
 
     public void downloadComments(long postId) {
+        ArrayList<Comment> comments = new ArrayList<>(3);
+        for(int i = 0; i < 8; i++) {
+            Comment comment = new Comment();
+            comment.setId(i + 1);
+            comment.setText("This is comment with id: " + comment.getId());
+            comments.add(comment);
+        }
 
+        displayComments(comments);
     }
 
     public void displayPost(Post post) {
-        postContainer.setVisibility(View.VISIBLE);
         downloadProgress.setVisibility(View.GONE);
-        timeText.setText(SDF.format(post.getCreatedAt()));
-        postCaption.setText(post.getText());
-        Picasso.with(this).load(post.getImageUrl()).into(postImage);
+        swipeRefreshLayout.setRefreshing(false);
+        adapter.setData(post, null);
     }
 
     public void displayComments(List<Comment> comments) {
-
+        adapter.setData(post, comments);
     }
 }
