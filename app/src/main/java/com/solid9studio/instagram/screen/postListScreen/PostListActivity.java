@@ -1,4 +1,4 @@
-package com.solid9studio.instagram.screens.PostListScreen;
+package com.solid9studio.instagram.screen.postListScreen;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +14,7 @@ import android.view.View;
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.model.Post;
-import com.solid9studio.instagram.screens.PostScreen.PostActivity;
+import com.solid9studio.instagram.screen.postScreen.PostActivity;
 
 import java.util.ArrayList;
 import java.util.List;

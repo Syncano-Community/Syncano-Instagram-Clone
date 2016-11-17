@@ -1,4 +1,4 @@
-package com.solid9studio.instagram.screens.LoginScreen;
+package com.solid9studio.instagram.screen.loginScreen;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
-import com.solid9studio.instagram.screens.PostListScreen.PostListActivity;
+import com.solid9studio.instagram.screen.postListScreen.PostListActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

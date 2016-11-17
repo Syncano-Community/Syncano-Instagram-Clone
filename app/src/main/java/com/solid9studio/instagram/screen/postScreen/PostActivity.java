@@ -1,4 +1,4 @@
-package com.solid9studio.instagram.screens.PostScreen;
+package com.solid9studio.instagram.screen.postScreen;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,8 +14,6 @@ import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.model.Comment;
 import com.solid9studio.instagram.model.Post;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;

@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".screens.LoginScreen.LoginActivity"
+            android:name=".screen.loginScreen.LoginActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,10 +22,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".screens.PostListScreen.PostListActivity"
+            android:name=".screen.postListScreen.PostListActivity"
             android:label="@string/title_activity_post_list"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".screens.PostScreen.PostActivity"></activity>
+        <activity android:name=".screen.postScreen.PostActivity"></activity>
     </application>
 
 </manifest>

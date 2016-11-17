@@ -8,7 +8,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    tools:context="com.solid9studio.instagram.screens.PostScreen.PostActivity">
+    tools:context="com.solid9studio.instagram.screen.postScreen.PostActivity">
 
     <ProgressBar
         android:id="@+id/download_progress"
@@ -55,7 +55,7 @@
 
         </LinearLayout>
 
-        <com.solid9studio.instagram.views.SquareImageView
+        <com.solid9studio.instagram.view.SquareImageView
             android:id="@+id/post_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

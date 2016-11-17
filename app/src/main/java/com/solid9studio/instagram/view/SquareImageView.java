@@ -1,4 +1,4 @@
-package com.solid9studio.instagram.views;
+package com.solid9studio.instagram.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.solid9studio.instagram.screens.PostListScreen.PostListActivity">
+    tools:context="com.solid9studio.instagram.screen.postListScreen.PostListActivity">
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

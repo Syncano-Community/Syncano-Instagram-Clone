@@ -1,4 +1,4 @@
-package com.solid9studio.instagram.screens.PostListScreen;
+package com.solid9studio.instagram.screen.postListScreen;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
