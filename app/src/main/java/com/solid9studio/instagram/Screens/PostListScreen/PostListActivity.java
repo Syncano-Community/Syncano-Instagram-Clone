@@ -14,6 +14,7 @@ import android.view.View;
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.model.Post;
+import com.solid9studio.instagram.screens.PostScreen.PostActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,8 @@ public class PostListActivity extends BaseActivity {
     public void onFabClick(View view) {
         Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
+
+        startActivity(PostActivity.getActivityIntent(this, 1));
     }
 
     private void downloadPosts() {

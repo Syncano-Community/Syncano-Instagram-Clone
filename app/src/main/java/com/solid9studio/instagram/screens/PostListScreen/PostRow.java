@@ -35,13 +35,13 @@ public class PostRow extends Row {
         ViewHolder h = (ViewHolder) holder;
         h.topView.setTag(post);
 
-        h.text.setText(post.text);
+        h.text.setText(post.getText());
     }
 
     // ==================== ViewHolder ==================== //
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.post_text)
+        @BindView(R.id.post_caption)
         TextView text;
 
         View topView;

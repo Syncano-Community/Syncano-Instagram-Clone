@@ -7,7 +7,7 @@
     android:background="@color/colorPrimaryDark">
 
     <TextView
-        android:id="@+id/post_text"
+        android:id="@+id/post_caption"
         android:text="Post content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
