@@ -17,6 +17,8 @@ import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.model.Post;
 import com.solid9studio.instagram.screen.createPostScreen.CreatePostActivity;
+import com.solid9studio.instagram.screen.profileScreen.ProfileActivity;
+import com.solid9studio.instagram.screen.settingsScreen.SettingsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,10 +77,10 @@ public class PostListActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_profile:
-                //sharePost();
+                goToProfile();
                 return true;
             case R.id.action_settings:
-                //sharePost();
+                goToSettings();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -101,6 +103,14 @@ public class PostListActivity extends BaseActivity {
         }
 
         displayPosts(posts);
+    }
+
+    public void goToSettings() {
+        startActivity(SettingsActivity.getActivityIntent(this));
+    }
+
+    public void goToProfile() {
+        startActivity(ProfileActivity.getActivityIntent(this));
     }
 
     private void displayPosts(List<Post> posts) {
