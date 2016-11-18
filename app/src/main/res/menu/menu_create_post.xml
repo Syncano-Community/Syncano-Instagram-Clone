@@ -3,14 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.solid9studio.instagram.screen.postListScreen.PostListActivity">
     <item
-        android:id="@+id/action_profile"
+        android:id="@+id/action_share"
         android:orderInCategory="100"
-        android:title="@string/action_profile"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:title="@string/action_share"
+        app:showAsAction="always" />
 </menu>
