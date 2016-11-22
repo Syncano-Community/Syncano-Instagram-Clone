@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@android:color/darker_gray"/>
+        android:background="@drawable/rect_outline"/>
 
     <TextView
         android:id="@+id/post_caption"

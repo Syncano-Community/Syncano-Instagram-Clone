@@ -1,5 +1,6 @@
 package com.solid9studio.instagram.screen.postListScreen;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.model.Post;
 import com.solid9studio.instagram.Row;
+import com.solid9studio.instagram.screen.postScreen.PostActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,12 +58,11 @@ public class PostRow extends Row {
 
         @Override
         public void onClick(View v) {
-//            Match match = (Match) v.getTag();
-//            if (match == null) {
-//                return;
-//            }
-//
-//            EventBus.getDefault().post(new MatchSelectedEvent(match));
+            Context context = v.getContext();
+            Post post = (Post)v.getTag();
+            if (post != null) {
+                context.startActivity(PostActivity.getActivityIntent(context, post.getId()));
+            }
         }
     }
 }
