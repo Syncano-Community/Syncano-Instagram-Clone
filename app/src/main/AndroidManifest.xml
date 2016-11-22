@@ -28,10 +28,14 @@
             android:name=".screen.postListScreen.PostListActivity"
             android:label="@string/title_activity_post_list"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".screen.postScreen.PostActivity" />
-        <activity android:name=".screen.createPostScreen.CreatePostActivity" />
-        <activity android:name=".screen.settingsScreen.SettingsActivity" />
-        <activity android:name=".screen.profileScreen.ProfileActivity"></activity>
+        <activity android:name=".screen.postScreen.PostActivity"
+            android:label="@string/title_activity_post"/>
+        <activity android:name=".screen.createPostScreen.CreatePostActivity"
+            android:label="@string/title_activity_create_post"/>
+        <activity android:name=".screen.settingsScreen.SettingsActivity"
+            android:label="@string/title_activity_settings"/>
+        <activity android:name=".screen.profileScreen.ProfileActivity"
+            android:label="@string/title_activity_profile"></activity>
     </application>
 
 </manifest>
