@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.solid9studio.instagram.screen.postListScreen.PostListActivity">
     <item
-        android:id="@+id/action_sign_out"
+        android:id="@+id/action_save"
         android:orderInCategory="100"
-        android:title="@string/action_sign_out"
+        android:title="@string/action_save"
         app:showAsAction="always" />
 </menu>

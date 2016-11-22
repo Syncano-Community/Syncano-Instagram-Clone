@@ -16,4 +16,15 @@
         android:text="Notifications"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/sign_out_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_large"
+        android:gravity="right"
+        android:textColor="@color/colorAccent"
+        android:clickable="true"
+        android:text="@string/action_sign_out"/>
+
 </LinearLayout>
