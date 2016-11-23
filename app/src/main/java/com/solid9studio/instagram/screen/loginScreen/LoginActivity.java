@@ -18,7 +18,10 @@ import android.widget.TextView;
 
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
+import com.solid9studio.instagram.application.Instagram;
 import com.solid9studio.instagram.screen.postListScreen.PostListActivity;
+import com.syncano.library.api.Response;
+import com.syncano.library.data.User;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,6 +47,9 @@ public class LoginActivity extends BaseActivity {
 
     private UserLoginTask mAuthTask;
 
+    private User user;
+    private Response<User> loginResponse;
+
     public static Intent getActivityIntent(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
         return intent;
@@ -65,6 +71,8 @@ public class LoginActivity extends BaseActivity {
                 return false;
             }
         });
+
+        user = ((Instagram) this.getApplication()).getUser();
     }
 
     @OnClick(R.id.email_sign_in_button)
@@ -175,6 +183,11 @@ public class LoginActivity extends BaseActivity {
         startActivity(PostListActivity.getActivityIntent(this));
     }
 
+    private void saveUserKey()
+    {
+        ((Instagram) this.getApplication()).setUserKey(user.getUserKey());
+    }
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -191,17 +204,18 @@ public class LoginActivity extends BaseActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+
+            user.setUserName(mEmail);
+            user.setPassword(mPassword);
 
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                Response<User> response = user.login();
+                loginResponse = response;
+
+                return response.isSuccess();
+            } catch (Exception e) {
                 return false;
             }
-
-            // TODO: register the new account here.
-            return true;
         }
 
         @Override
@@ -210,11 +224,19 @@ public class LoginActivity extends BaseActivity {
             showProgress(false);
 
             if (success) {
-                //finish();
+                saveUserKey();
                 goToPostList();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+
+                if(loginResponse.getError().contains("Invalid password")) {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                }
+
+                if (loginResponse.getError().contains("Invalid username")) {
+                    mEmailView.setError(getString(R.string.error_invalid_email));
+                    mEmailView.requestFocus();
+                }
             }
         }
 
