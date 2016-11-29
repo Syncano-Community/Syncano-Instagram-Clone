@@ -7,8 +7,6 @@ import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.application.Instagram;
 import com.solid9studio.instagram.screen.loginScreen.LoginActivity;
 import com.solid9studio.instagram.screen.postListScreen.PostListActivity;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 public class SplashActivity extends BaseActivity {
 
@@ -25,9 +23,8 @@ public class SplashActivity extends BaseActivity {
     }
 
     private boolean isLoggedIn() {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-        if(settings.contains(Instagram.USER_KEY)) {
-            ((Instagram) this.getApplication()).getUser().setUserKey(settings.getString(Instagram.USER_KEY, ""));
+        if(((Instagram) this.getApplication()).getUser() != null)
+        {
             return true;
         }
         return false;

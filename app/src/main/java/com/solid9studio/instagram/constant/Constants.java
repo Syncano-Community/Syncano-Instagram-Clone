@@ -5,8 +5,6 @@ package com.solid9studio.instagram.constant;
  */
 
 public class Constants {
-
-    public static final String API_KEY = "5aa943d5e28647fa84b49aedade6f5f6b0a72eed";
-    public static final String INSTANCE_NAME = "examples";
-
+    public static final String API_KEY = "adfee89ec99b7022de16383185b299c29459e1fa";
+    public static final String INSTANCE_NAME = "instagram-clone";
 }

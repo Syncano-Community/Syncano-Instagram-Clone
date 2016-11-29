@@ -20,8 +20,8 @@ import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.application.Instagram;
 import com.solid9studio.instagram.screen.postListScreen.PostListActivity;
+import com.solid9studio.instagram.user.InstagramUser;
 import com.syncano.library.api.Response;
-import com.syncano.library.data.User;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,8 +47,8 @@ public class LoginActivity extends BaseActivity {
 
     private UserLoginTask mAuthTask;
 
-    private User user;
-    private Response<User> loginResponse;
+    private InstagramUser user;
+    private Response<InstagramUser> loginResponse;
 
     public static Intent getActivityIntent(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
@@ -72,7 +72,9 @@ public class LoginActivity extends BaseActivity {
             }
         });
 
-        user = ((Instagram) this.getApplication()).getUser();
+        mEmailView.setText("test@test.pl");
+        mPasswordView.setText("syncano");
+        user = new InstagramUser();
     }
 
     @OnClick(R.id.email_sign_in_button)
@@ -128,7 +130,7 @@ public class LoginActivity extends BaseActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(email, password, this);
             mAuthTask.execute((Void) null);
         }
     }
@@ -183,9 +185,9 @@ public class LoginActivity extends BaseActivity {
         startActivity(PostListActivity.getActivityIntent(this));
     }
 
-    private void saveUserKey()
+    private void saveUser()
     {
-        ((Instagram) this.getApplication()).setUserKey(user.getUserKey());
+        ((Instagram) this.getApplication()).getSyncanoInstance().setUser(user);
     }
 
     /**
@@ -196,10 +198,12 @@ public class LoginActivity extends BaseActivity {
 
         private final String mEmail;
         private final String mPassword;
+        private LoginActivity mLoginActivity;
 
-        UserLoginTask(String email, String password) {
+        UserLoginTask(String email, String password, LoginActivity loginActivity) {
             mEmail = email;
             mPassword = password;
+            mLoginActivity = loginActivity;
         }
 
         @Override
@@ -207,10 +211,16 @@ public class LoginActivity extends BaseActivity {
 
             user.setUserName(mEmail);
             user.setPassword(mPassword);
+          //  user.getProfile().setAvatar(new SyncanoFile());
 
             try {
-                Response<User> response = user.login();
+                Response<InstagramUser> response = user.login();
                 loginResponse = response;
+
+                if(response.isSuccess())
+                {
+                    mLoginActivity.user = response.getData();
+                }
 
                 return response.isSuccess();
             } catch (Exception e) {
@@ -224,7 +234,7 @@ public class LoginActivity extends BaseActivity {
             showProgress(false);
 
             if (success) {
-                saveUserKey();
+                saveUser();
                 goToPostList();
             } else {
 
