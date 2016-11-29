@@ -10,6 +10,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
@@ -20,6 +23,7 @@ import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.application.Instagram;
 import com.solid9studio.instagram.screen.postListScreen.PostListActivity;
+import com.solid9studio.instagram.screen.registerScreen.RegisterActivity;
 import com.solid9studio.instagram.user.InstagramUser;
 import com.syncano.library.api.Response;
 
@@ -75,6 +79,24 @@ public class LoginActivity extends BaseActivity {
         mEmailView.setText("test@test.pl");
         mPasswordView.setText("syncano");
         user = new InstagramUser();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_login, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_register:
+                goToRegister();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @OnClick(R.id.email_sign_in_button)
@@ -183,6 +205,10 @@ public class LoginActivity extends BaseActivity {
 
     private void goToPostList() {
         startActivity(PostListActivity.getActivityIntent(this));
+    }
+
+    private void goToRegister() {
+        startActivity(RegisterActivity.getActivityIntent(this));
     }
 
     private void saveUser()

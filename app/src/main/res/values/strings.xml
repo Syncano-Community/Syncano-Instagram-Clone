@@ -8,6 +8,7 @@
     <string name="prompt_password">Password</string>
     <string name="prompt_confirm_password">Confirm password</string>
     <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_in_facebook">Sign in with Facebook</string>
     <string name="action_register">Register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
@@ -15,6 +16,8 @@
     <string name="error_confirm_password">Should be same as password</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_register">Register</string>
     <string name="title_activity_post_list">Stream</string>
     <string name="title_activity_create_post">Create</string>
     <string name="title_activity_settings">Settings</string>
