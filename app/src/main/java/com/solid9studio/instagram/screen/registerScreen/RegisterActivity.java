@@ -7,17 +7,31 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
+import com.solid9studio.instagram.application.Instagram;
 import com.solid9studio.instagram.screen.postListScreen.PostListActivity;
+import com.solid9studio.instagram.user.InstagramProfile;
+import com.solid9studio.instagram.user.InstagramUser;
+import com.solid9studio.instagram.utilities.Utilities;
+import com.syncano.library.api.Response;
+import com.syncano.library.callbacks.SyncanoCallback;
+import com.syncano.library.data.AbstractUser;
+import com.syncano.library.data.SyncanoFile;
+import com.syncano.library.data.SyncanoObject;
+
+import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +61,11 @@ public class RegisterActivity extends BaseActivity {
     @BindView(R.id.register_form)
     View mFormView;
 
+    @BindView(R.id.user_avatar)
+    ImageView mUserAvatar;
+
+    private File avatarFile;
+
     public static Intent getActivityIntent(Context context) {
         Intent intent = new Intent(context, RegisterActivity.class);
         return intent;
@@ -69,6 +88,12 @@ public class RegisterActivity extends BaseActivity {
             }
         });
 
+        Utilities.setSelectPictureListener(this, mUserAvatar);
+        mNameView.setText("ASDASDASD");
+        mSurnameView.setText("pppppasdsadsa");
+        mEmailView.setText("XXXXXXXX@XX");
+        mPasswordView.setText("DDDDDDD");
+        mConfirmPasswordView.setText("DDDDDDD");
     }
 
     @OnClick(R.id.register_button)
@@ -78,9 +103,6 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void attemptRegister() {
-//        if (mAuthTask != null) {
-//            return;
-//        }
 
         // Reset errors.
         mNameView.setError(null);
@@ -104,7 +126,7 @@ public class RegisterActivity extends BaseActivity {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
-        } else if (!TextUtils.isEmpty(confirmPassword) && confirmPassword != password) {
+        } else if (!TextUtils.isEmpty(confirmPassword) && !confirmPassword.equals(password)) {
             mConfirmPasswordView.setError(getString(R.string.error_confirm_password));
             focusView = mConfirmPasswordView;
             cancel = true;
@@ -128,9 +150,23 @@ public class RegisterActivity extends BaseActivity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-//            showProgress(true);
-//            mAuthTask = new UserLoginTask(email, password, this);
-//            mAuthTask.execute((Void) null);
+            showProgress(true);
+
+            InstagramUser newUser = new InstagramUser(email, password, name, surname, new SyncanoFile(avatarFile));
+
+            newUser.register(new SyncanoCallback<AbstractUser>() {
+                @Override
+                public void success(Response<AbstractUser> response, AbstractUser result) {
+
+                    showProgress(false);
+                    goToPostList();
+                }
+
+                @Override
+                public void failure(Response<AbstractUser> response) {
+                    showProgress(false);
+                }
+            });
         }
     }
 
@@ -182,6 +218,10 @@ public class RegisterActivity extends BaseActivity {
 
     private void goToPostList() {
         startActivity(PostListActivity.getActivityIntent(this));
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        avatarFile = Utilities.onSelectedPicutreFromGallery(this, requestCode, resultCode, data, mUserAvatar);
     }
 }
 

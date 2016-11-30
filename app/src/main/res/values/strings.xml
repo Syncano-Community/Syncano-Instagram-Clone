@@ -28,4 +28,5 @@
     <string name="action_share">Share</string>
     <string name="action_sign_out">Sign Out</string>
     <string name="action_save">Save</string>
+    <string name="facebook_app_id">1792447224340102</string>
 </resources>

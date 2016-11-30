@@ -26,6 +26,9 @@ import com.solid9studio.instagram.screen.postListScreen.PostListActivity;
 import com.solid9studio.instagram.screen.registerScreen.RegisterActivity;
 import com.solid9studio.instagram.user.InstagramUser;
 import com.syncano.library.api.Response;
+import com.syncano.library.callbacks.SyncanoCallback;
+import com.syncano.library.choice.SocialAuthBackend;
+import com.syncano.library.data.AbstractUser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,8 +51,6 @@ public class LoginActivity extends BaseActivity {
 
     @BindView(R.id.login_form)
     View mLoginFormView;
-
-    private UserLoginTask mAuthTask;
 
     private InstagramUser user;
     private Response<InstagramUser> loginResponse;
@@ -105,15 +106,18 @@ public class LoginActivity extends BaseActivity {
         attemptLogin();
     }
 
+    @OnClick(R.id.social_login_button)
+    public void onSocialSignInButton()
+    {
+        attemptLoginSocial();
+    }
+
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
 
         // Reset errors.
         mEmailView.setError(null);
@@ -152,9 +156,45 @@ public class LoginActivity extends BaseActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password, this);
-            mAuthTask.execute((Void) null);
+
+            user.setUserName(email);
+            user.setPassword(password);
+
+            user.login(new SyncanoCallback<AbstractUser>() {
+                @Override
+                public void success(Response<AbstractUser> response, AbstractUser result) {
+                    user = (InstagramUser) response.getData();
+                    saveUser();
+                    goToPostList();
+                }
+
+                @Override
+                public void failure(Response<AbstractUser> response) {
+                    showProgress(false);
+                }
+            });
         }
+    }
+
+    private void attemptLoginSocial()
+    {
+        user.setUserName(mEmailView.getText().toString());
+
+
+        user = new InstagramUser(SocialAuthBackend.FACEBOOK, "EAAZAeOKQV3oYBABDnfhxIAvJsd9ZA33gM1vu7W1SEAelNrMGNm8krr7LrqkrMU0KF3lG8ZCQXxg2cBCMZCaVTFLVwqSGieKKzpbHHactgTtuaOKCfpsfOm9cWzXcZADwl7IJcZBDT2Y5ebTC1XIxWkaepxW1HxgY1Hn4ieXL58hQZDZD");
+        user.loginSocialUser(new SyncanoCallback<AbstractUser>() {
+            @Override
+            public void success(Response<AbstractUser> response, AbstractUser result) {
+                user = (InstagramUser) response.getData();
+                saveUser();
+                goToPostList();
+            }
+
+            @Override
+            public void failure(Response<AbstractUser> response) {
+                showProgress(false);
+            }
+        });
     }
 
     private boolean isEmailValid(String email) {
@@ -214,73 +254,6 @@ public class LoginActivity extends BaseActivity {
     private void saveUser()
     {
         ((Instagram) this.getApplication()).getSyncanoInstance().setUser(user);
-    }
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-        private LoginActivity mLoginActivity;
-
-        UserLoginTask(String email, String password, LoginActivity loginActivity) {
-            mEmail = email;
-            mPassword = password;
-            mLoginActivity = loginActivity;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-
-            user.setUserName(mEmail);
-            user.setPassword(mPassword);
-          //  user.getProfile().setAvatar(new SyncanoFile());
-
-            try {
-                Response<InstagramUser> response = user.login();
-                loginResponse = response;
-
-                if(response.isSuccess())
-                {
-                    mLoginActivity.user = response.getData();
-                }
-
-                return response.isSuccess();
-            } catch (Exception e) {
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                saveUser();
-                goToPostList();
-            } else {
-
-                if(loginResponse.getError().contains("Invalid password")) {
-                    mPasswordView.setError(getString(R.string.error_incorrect_password));
-                    mPasswordView.requestFocus();
-                }
-
-                if (loginResponse.getError().contains("Invalid username")) {
-                    mEmailView.setError(getString(R.string.error_invalid_email));
-                    mEmailView.requestFocus();
-                }
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
     }
 }
 

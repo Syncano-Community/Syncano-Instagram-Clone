@@ -11,13 +11,13 @@ import com.syncano.library.data.SyncanoFile;
 public class InstagramProfile extends Profile {
 
     @SyncanoField(name = "avatar")
-    private SyncanoFile avatar;
+    protected SyncanoFile avatar;
 
     @SyncanoField(name = "name")
-    private String name;
+    protected String name;
 
     @SyncanoField(name = "surname")
-    private String surname;
+    protected String surname;
 
     public String getSurname() {
         return surname;
