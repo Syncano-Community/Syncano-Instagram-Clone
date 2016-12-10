@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +20,15 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.application.Instagram;
@@ -29,6 +39,11 @@ import com.syncano.library.api.Response;
 import com.syncano.library.callbacks.SyncanoCallback;
 import com.syncano.library.choice.SocialAuthBackend;
 import com.syncano.library.data.AbstractUser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,7 +67,11 @@ public class LoginActivity extends BaseActivity {
     @BindView(R.id.login_form)
     View mLoginFormView;
 
+    @BindView(R.id.social_login_button)
+    LoginButton mLoginButton;
+
     private InstagramUser user;
+    private CallbackManager callbackManager;
     private Response<InstagramUser> loginResponse;
 
     public static Intent getActivityIntent(Context context) {
@@ -63,8 +82,10 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        callbackManager = CallbackManager.Factory.create();
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -76,6 +97,11 @@ public class LoginActivity extends BaseActivity {
                 return false;
             }
         });
+
+        mLoginButton.setReadPermissions(Arrays.asList(
+                "public_profile", "email", "user_birthday", "user_friends"));
+        mLoginButton.registerCallback(callbackManager, callback);
+
 
         mEmailView.setText("test@test.pl");
         mPasswordView.setText("syncano");
@@ -101,15 +127,8 @@ public class LoginActivity extends BaseActivity {
     }
 
     @OnClick(R.id.email_sign_in_button)
-    public void onEmailSignInButton()
-    {
+    public void onEmailSignInButton() {
         attemptLogin();
-    }
-
-    @OnClick(R.id.social_login_button)
-    public void onSocialSignInButton()
-    {
-        attemptLoginSocial();
     }
 
     /**
@@ -176,12 +195,10 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    private void attemptLoginSocial()
-    {
-        user.setUserName(mEmailView.getText().toString());
+    private void attemptLoginSocial(String accessToken, String email) {
+        user.setUserName(email);
 
-
-        user = new InstagramUser(SocialAuthBackend.FACEBOOK, "EAAZAeOKQV3oYBABDnfhxIAvJsd9ZA33gM1vu7W1SEAelNrMGNm8krr7LrqkrMU0KF3lG8ZCQXxg2cBCMZCaVTFLVwqSGieKKzpbHHactgTtuaOKCfpsfOm9cWzXcZADwl7IJcZBDT2Y5ebTC1XIxWkaepxW1HxgY1Hn4ieXL58hQZDZD");
+        user = new InstagramUser(SocialAuthBackend.FACEBOOK, accessToken); //"EAAZAeOKQV3oYBABDnfhxIAvJsd9ZA33gM1vu7W1SEAelNrMGNm8krr7LrqkrMU0KF3lG8ZCQXxg2cBCMZCaVTFLVwqSGieKKzpbHHactgTtuaOKCfpsfOm9cWzXcZADwl7IJcZBDT2Y5ebTC1XIxWkaepxW1HxgY1Hn4ieXL58hQZDZD");
         user.loginSocialUser(new SyncanoCallback<AbstractUser>() {
             @Override
             public void success(Response<AbstractUser> response, AbstractUser result) {
@@ -251,9 +268,55 @@ public class LoginActivity extends BaseActivity {
         startActivity(RegisterActivity.getActivityIntent(this));
     }
 
-    private void saveUser()
-    {
+    private void saveUser() {
         ((Instagram) this.getApplication()).getSyncanoInstance().setUser(user);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
+        @Override
+        public void onSuccess(LoginResult loginResult) {
+           final AccessToken accessToken = loginResult.getAccessToken();
+
+
+            // Facebook Email address
+            GraphRequest request = GraphRequest.newMeRequest(
+                    loginResult.getAccessToken(),
+                    new GraphRequest.GraphJSONObjectCallback() {
+                        @Override
+                        public void onCompleted(
+                                JSONObject object,
+                                GraphResponse response) {
+                            try {
+
+                                String email = object.getString("email");
+                                attemptLoginSocial(accessToken.getToken(), email);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,name,email,gender, birthday");
+            request.setParameters(parameters);
+            request.executeAsync();
+        }
+
+        @Override
+        public void onCancel() {
+
+        }
+
+        @Override
+        public void onError(FacebookException e) {
+
+        }
+    };
 }
 
