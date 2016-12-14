@@ -198,7 +198,7 @@ public class LoginActivity extends BaseActivity {
     private void attemptLoginSocial(String accessToken, String email) {
         user.setUserName(email);
 
-        user = new InstagramUser(SocialAuthBackend.FACEBOOK, accessToken); //"EAAZAeOKQV3oYBABDnfhxIAvJsd9ZA33gM1vu7W1SEAelNrMGNm8krr7LrqkrMU0KF3lG8ZCQXxg2cBCMZCaVTFLVwqSGieKKzpbHHactgTtuaOKCfpsfOm9cWzXcZADwl7IJcZBDT2Y5ebTC1XIxWkaepxW1HxgY1Hn4ieXL58hQZDZD");
+        user = new InstagramUser(SocialAuthBackend.FACEBOOK, accessToken);
         user.loginSocialUser(new SyncanoCallback<AbstractUser>() {
             @Override
             public void success(Response<AbstractUser> response, AbstractUser result) {

@@ -79,7 +79,7 @@ public class ProfileActivity extends BaseActivity {
     private void updateProfile()
     {
         user.getProfile().setName(mUsernameView.getText().toString());
-        user.getProfile().setSurname(mUsernameView.getText().toString());
+        user.getProfile().setSurname(mSurnameView.getText().toString());
         user.getProfile().setAvatar(new SyncanoFile(avatarFile));
 
 
@@ -97,6 +97,6 @@ public class ProfileActivity extends BaseActivity {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Utilities.onSelectedPicutreFromGallery(this, requestCode, resultCode, data, mAvatarView);
+        avatarFile = Utilities.onSelectedPicutreFromGallery(this, requestCode, resultCode, data, mAvatarView);
     }
 }
