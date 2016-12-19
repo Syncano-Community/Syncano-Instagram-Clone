@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,16 +36,29 @@ import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.application.Instagram;
 import com.solid9studio.instagram.screen.postListScreen.PostListActivity;
 import com.solid9studio.instagram.screen.registerScreen.RegisterActivity;
+import com.solid9studio.instagram.user.InstagramProfile;
 import com.solid9studio.instagram.user.InstagramUser;
 import com.syncano.library.api.Response;
 import com.syncano.library.callbacks.SyncanoCallback;
 import com.syncano.library.choice.SocialAuthBackend;
 import com.syncano.library.data.AbstractUser;
+import com.syncano.library.data.SyncanoFile;
+import com.syncano.library.data.SyncanoObject;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -195,16 +210,35 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    private void attemptLoginSocial(String accessToken, String email) {
+    private void attemptLoginSocial(String accessToken, final String email, final String name, final String surname, final byte[] byteArray) {
         user.setUserName(email);
 
         user = new InstagramUser(SocialAuthBackend.FACEBOOK, accessToken);
+        user.setProfile(new InstagramProfile());
+
+
         user.loginSocialUser(new SyncanoCallback<AbstractUser>() {
             @Override
             public void success(Response<AbstractUser> response, AbstractUser result) {
                 user = (InstagramUser) response.getData();
-                saveUser();
-                goToPostList();
+
+                user.getProfile().setName(name);
+                user.getProfile().setSurname(surname);
+                user.getProfile().setAvatar(new SyncanoFile(byteArray));
+
+                user.getProfile().save(new SyncanoCallback<SyncanoObject>() {
+                    @Override
+                    public void success(Response<SyncanoObject> response, SyncanoObject result) {
+                        saveUser();
+                        goToPostList();
+                    }
+
+                    @Override
+                    public void failure(Response<SyncanoObject> response) {
+
+                    }
+                });
+
             }
 
             @Override
@@ -281,7 +315,7 @@ public class LoginActivity extends BaseActivity {
     private FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
-           final AccessToken accessToken = loginResult.getAccessToken();
+            final AccessToken accessToken = loginResult.getAccessToken();
 
 
             // Facebook Email address
@@ -290,12 +324,19 @@ public class LoginActivity extends BaseActivity {
                     new GraphRequest.GraphJSONObjectCallback() {
                         @Override
                         public void onCompleted(
-                                JSONObject object,
+                                JSONObject json,
                                 GraphResponse response) {
                             try {
+                                String email = json.getString("email");
+                                String name = json.getString("first_name");
+                                String surname = json.getString("last_name");
+                                String profilePicUrl = json.getJSONObject("picture").getJSONObject("data").getString("url");
 
-                                String email = object.getString("email");
-                                attemptLoginSocial(accessToken.getToken(), email);
+                                 new AttemptLoginSocial().execute(accessToken.getToken(), email, name, surname, profilePicUrl);
+
+
+                               // attemptLoginSocial(accessToken.getToken(), email, name, surname, profilePicUrl);
+
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -303,7 +344,7 @@ public class LoginActivity extends BaseActivity {
                         }
                     });
             Bundle parameters = new Bundle();
-            parameters.putString("fields", "id,name,email,gender, birthday");
+            parameters.putString("fields", "first_name,last_name,email, picture.type(large)");
             request.setParameters(parameters);
             request.executeAsync();
         }
@@ -318,5 +359,34 @@ public class LoginActivity extends BaseActivity {
 
         }
     };
-}
 
+    class AttemptLoginSocial extends AsyncTask<String, Void, Void> {
+
+        private Exception exception;
+
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+
+                URL FBUrl = new URL(params[4]);
+                HttpsURLConnection connection = (HttpsURLConnection) FBUrl.openConnection();
+                HttpsURLConnection.setFollowRedirects(true);
+                connection.setInstanceFollowRedirects(true);
+
+                Bitmap userProfilePicture = BitmapFactory.decodeStream(connection.getInputStream());
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                userProfilePicture.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+
+                attemptLoginSocial(params[0], params[1], params[2], params[3], byteArray);
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
+}

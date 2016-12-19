@@ -2,6 +2,8 @@ package com.solid9studio.instagram.screen.profileScreen;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -74,6 +76,14 @@ public class ProfileActivity extends BaseActivity {
         mUsernameView.setText(user.getProfile().getName());
         mSurnameView.setText(user.getProfile().getSurname());
         mEmailVIew.setText(user.getUserName());
+
+        if(user.getProfile().getAvatar() != null && user.getProfile().getAvatar().getData() != null)
+        {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inMutable = true;
+            Bitmap bmp = BitmapFactory.decodeByteArray( user.getProfile().getAvatar().getData(), 0,  user.getProfile().getAvatar().getData().length, options);
+            mAvatarView.setImageBitmap(bmp);
+        }
     }
 
     private void updateProfile()
@@ -81,7 +91,6 @@ public class ProfileActivity extends BaseActivity {
         user.getProfile().setName(mUsernameView.getText().toString());
         user.getProfile().setSurname(mSurnameView.getText().toString());
         user.getProfile().setAvatar(new SyncanoFile(avatarFile));
-
 
         user.getProfile().save(new SyncanoCallback<SyncanoObject>() {
             @Override
