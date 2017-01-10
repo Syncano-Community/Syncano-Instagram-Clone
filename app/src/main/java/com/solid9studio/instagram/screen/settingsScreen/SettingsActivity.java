@@ -7,10 +7,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Switch;
 
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
+import com.solid9studio.instagram.application.Instagram;
+import com.solid9studio.instagram.screen.loginScreen.LoginActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,6 +61,9 @@ public class SettingsActivity extends BaseActivity {
 
     @OnClick(R.id.sign_out_button)
     public void signOut() {
-        Log.d("SettingsActivity", "signOut");
+        ((Instagram) this.getApplication()).getSyncanoInstance().setUser(null);
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 }

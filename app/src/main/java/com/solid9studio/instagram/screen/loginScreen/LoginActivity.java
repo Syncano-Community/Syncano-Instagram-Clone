@@ -216,11 +216,14 @@ public class LoginActivity extends BaseActivity {
         user = new InstagramUser(SocialAuthBackend.FACEBOOK, accessToken);
         user.setProfile(new InstagramProfile());
 
+        String pass = email.split("@")[0];
+        user.setPassword(pass);
 
         user.loginSocialUser(new SyncanoCallback<AbstractUser>() {
             @Override
             public void success(Response<AbstractUser> response, AbstractUser result) {
                 user = (InstagramUser) response.getData();
+
 
                 user.getProfile().setName(name);
                 user.getProfile().setSurname(surname);
@@ -234,7 +237,7 @@ public class LoginActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void failure(Response<SyncanoObject> response) {
+                    public void failure( Response<SyncanoObject> response) {
 
                     }
                 });
