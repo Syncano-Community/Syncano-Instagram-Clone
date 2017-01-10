@@ -23,6 +23,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
+                android:id="@+id/image_send"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:background="@drawable/rect_outline"/>
@@ -31,10 +32,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Add..."/>
+                android:text="Add..."
+                android:id="@+id/image_send_text_view" />
         </FrameLayout>
 
         <EditText
+            android:id="@+id/text_post_summary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
