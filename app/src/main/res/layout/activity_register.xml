@@ -13,7 +13,7 @@
     <!-- Register progress -->
     <ProgressBar
         android:id="@+id/login_progress"
-        style="?android:attr/progressBarStyleLarge"
+        style="?android:attr/progressBarStyleSmallTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -34,7 +34,8 @@
                 android:id="@+id/user_avatar"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginRight="@dimen/space_normal"
+                android:layout_marginBottom="@dimen/space_normal"
+                android:scaleType="centerCrop"
                 android:src="@mipmap/avatar"/>
 
             <android.support.design.widget.TextInputLayout

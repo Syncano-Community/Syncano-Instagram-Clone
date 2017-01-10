@@ -29,23 +29,23 @@ import butterknife.ButterKnife;
 
 public class ProfileActivity extends BaseActivity {
 
-    @BindView(R.id.syncano_name)
+    @BindView(R.id.name)
     EditText mUsernameView;
 
-    @BindView(R.id.syncano_surname)
+    @BindView(R.id.surname)
     EditText mSurnameView;
 
-    @BindView(R.id.syncano_email)
+    @BindView(R.id.email)
     TextView mEmailVIew;
 
-    @BindView(R.id.avatar_button)
-    Button mAvatarButton;
+    @BindView(R.id.user_avatar)
+    ImageView mAvatarView;
 
-    @BindView(R.id.update_profile_button)
+    @BindView(R.id.update_button)
     Button mUpdateProfileButton;
 
-    @BindView(R.id.syncano_avatar)
-    ImageView mAvatarView;
+    @BindView(R.id.update_progress)
+    View mProgressView;
 
     private InstagramUser user;
     private Syncano syncano;
@@ -88,6 +88,7 @@ public class ProfileActivity extends BaseActivity {
 
     private void updateProfile()
     {
+        mProgressView.setVisibility(View.VISIBLE);
         user.getProfile().setName(mUsernameView.getText().toString());
         user.getProfile().setSurname(mSurnameView.getText().toString());
         user.getProfile().setAvatar(new SyncanoFile(avatarFile));
@@ -96,11 +97,12 @@ public class ProfileActivity extends BaseActivity {
             @Override
             public void success(Response<SyncanoObject> response, SyncanoObject result) {
                 syncano.setUser(user);
+                mProgressView.setVisibility(View.GONE);
             }
 
             @Override
             public void failure(Response<SyncanoObject> response) {
-
+                mProgressView.setVisibility(View.GONE);
             }
         });
     }

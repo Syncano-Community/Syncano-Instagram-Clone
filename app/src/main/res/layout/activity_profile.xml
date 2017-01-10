@@ -1,101 +1,203 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_profile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.solid9studio.instagram.screen.profileScreen.ProfileActivity">
 
-    <TextView
-        android:text="Name:"
+    <!-- Update progress -->
+    <ProgressBar
+        android:id="@+id/update_progress"
+        style="?android:attr/progressBarStyleSmallTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:id="@+id/textView3"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="25dp" />
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:text="Name"
-        android:ems="10"
-        android:id="@+id/syncano_name"
-        android:layout_alignBaseline="@+id/textView3"
-        android:layout_alignBottom="@+id/textView3"
-        android:layout_alignParentEnd="true" />
+    <ScrollView
+        android:id="@+id/profile_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:text="Email:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView5"
-        android:layout_above="@+id/syncano_avatar"
-        android:layout_alignStart="@+id/textView3"
-        android:layout_marginBottom="43dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <TextView
-        android:text="EMAIL"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/syncano_email"
-        android:layout_alignBaseline="@+id/textView5"
-        android:layout_alignBottom="@+id/textView5"
-        android:layout_toStartOf="@+id/syncano_avatar"
-        android:layout_marginEnd="34dp" />
+            <ImageView
+                android:id="@+id/user_avatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="@dimen/space_normal"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/avatar"/>
 
-    <Button
-        android:text="Select Avatar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/avatar_button"
-        android:layout_alignBottom="@+id/syncano_avatar"
-        android:layout_toStartOf="@+id/syncano_surname" />
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:text="Surname"
-        android:ems="10"
-        android:id="@+id/syncano_surname"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/syncano_name"
-        android:layout_alignParentEnd="true" />
+                <EditText
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_name"
+                    android:inputType="textAutoCorrect"
+                    android:maxLines="1"
+                    android:singleLine="true" />
 
-    <TextView
-        android:text="Surname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/syncano_surname"
-        android:layout_alignStart="@+id/textView3"
-        android:layout_marginTop="11dp"
-        android:id="@+id/textView" />
+            </android.support.design.widget.TextInputLayout>
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/avatar"
-        android:id="@+id/syncano_avatar"
-        android:layout_marginEnd="35dp"
-        android:layout_marginBottom="76dp"
-        android:layout_above="@+id/update_profile_button"
-        android:layout_alignParentEnd="true" />
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    <Button
-        android:text="Update"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="26dp"
-        android:id="@+id/update_profile_button"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/textView5" />
+                <EditText
+                    android:id="@+id/surname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_surname"
+                    android:inputType="textAutoCorrect"
+                    android:maxLines="1"
+                    android:singleLine="true" />
 
-</RelativeLayout>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <AutoCompleteTextView
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_email"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:clickable="false"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:singleLine="true" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/update_button"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/action_save"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
+
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:id="@+id/activity_profile"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:paddingBottom="@dimen/activity_vertical_margin"-->
+    <!--android:paddingLeft="@dimen/activity_horizontal_margin"-->
+    <!--android:paddingRight="@dimen/activity_horizontal_margin"-->
+    <!--android:paddingTop="@dimen/activity_vertical_margin"-->
+    <!--tools:context="com.solid9studio.instagram.screen.profileScreen.ProfileActivity">-->
+
+    <!--<TextView-->
+        <!--android:text="Name:"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="10dp"-->
+        <!--android:id="@+id/textView3"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_marginTop="25dp" />-->
+
+    <!--<EditText-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:inputType="textPersonName"-->
+        <!--android:text="Name"-->
+        <!--android:ems="10"-->
+        <!--android:id="@+id/syncano_name"-->
+        <!--android:layout_alignBaseline="@+id/textView3"-->
+        <!--android:layout_alignBottom="@+id/textView3"-->
+        <!--android:layout_alignParentEnd="true" />-->
+
+    <!--<TextView-->
+        <!--android:text="Email:"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/textView5"-->
+        <!--android:layout_above="@+id/syncano_avatar"-->
+        <!--android:layout_alignStart="@+id/textView3"-->
+        <!--android:layout_marginBottom="43dp" />-->
+
+    <!--<TextView-->
+        <!--android:text="EMAIL"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/syncano_email"-->
+        <!--android:layout_alignBaseline="@+id/textView5"-->
+        <!--android:layout_alignBottom="@+id/textView5"-->
+        <!--android:layout_toStartOf="@+id/syncano_avatar"-->
+        <!--android:layout_marginEnd="34dp" />-->
+
+    <!--<Button-->
+        <!--android:text="Select Avatar"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/avatar_button"-->
+        <!--android:layout_alignBottom="@+id/syncano_avatar"-->
+        <!--android:layout_toStartOf="@+id/syncano_surname" />-->
+
+    <!--<EditText-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:inputType="textPersonName"-->
+        <!--android:text="Surname"-->
+        <!--android:ems="10"-->
+        <!--android:id="@+id/syncano_surname"-->
+        <!--android:layout_marginTop="20dp"-->
+        <!--android:layout_below="@+id/syncano_name"-->
+        <!--android:layout_alignParentEnd="true" />-->
+
+    <!--<TextView-->
+        <!--android:text="Surname"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignTop="@+id/syncano_surname"-->
+        <!--android:layout_alignStart="@+id/textView3"-->
+        <!--android:layout_marginTop="11dp"-->
+        <!--android:id="@+id/textView" />-->
+
+    <!--<ImageView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:srcCompat="@mipmap/avatar"-->
+        <!--android:id="@+id/syncano_avatar"-->
+        <!--android:layout_marginEnd="35dp"-->
+        <!--android:layout_marginBottom="76dp"-->
+        <!--android:layout_above="@+id/update_profile_button"-->
+        <!--android:layout_alignParentEnd="true" />-->
+
+    <!--<Button-->
+        <!--android:text="Update"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="26dp"-->
+        <!--android:id="@+id/update_profile_button"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignStart="@+id/textView5" />-->
+
+<!--</RelativeLayout>-->
