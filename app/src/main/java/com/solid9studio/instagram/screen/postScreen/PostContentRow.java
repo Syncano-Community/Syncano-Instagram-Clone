@@ -46,7 +46,7 @@ public class PostContentRow extends Row {
         h.postCaption.setText(post.getPostSummary());
         h.userName.setText(post.getInstagramProfile().getName());
         Picasso.with(h.topView.getContext()).load(post.getPostImage().getLink()).into(h.postImage);
-
+        Picasso.with(h.topView.getContext()).load(post.getInstagramProfile().getAvatar().getLink()).into(h.userAvatar);
     }
 
     // ==================== ViewHolder ==================== //

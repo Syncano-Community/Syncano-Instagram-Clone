@@ -77,11 +77,8 @@ public class CreatePostActivity extends BaseActivity {
         instaPost.setPostSummary(imageSummaryText.getText().toString());
         instaPost.setPostImage(new SyncanoFile(avatarFile));
 
-        //instaPost.setPostOwnerId(((Instagram) this.getApplication()).getSyncanoInstance().getUser().getId());
-
         Syncano syncano = ((Instagram) this.getApplication()).getSyncanoInstance();
         InstagramProfile instagramProfile = (InstagramProfile)syncano.getUser().getProfile();
-
         instaPost.setInstagramProfile(instagramProfile);
 
         instaPost.getInstagramProfile().fetch(new SyncanoCallback<SyncanoObject>() {
@@ -92,7 +89,7 @@ public class CreatePostActivity extends BaseActivity {
 
             @Override
             public void failure(Response<SyncanoObject> response) {
-
+                onPictureSent();
             }
         });
 
