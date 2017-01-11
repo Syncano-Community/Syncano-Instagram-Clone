@@ -1,5 +1,7 @@
 package com.solid9studio.instagram.user;
 
+import com.syncano.library.Constants;
+import com.syncano.library.annotation.SyncanoClass;
 import com.syncano.library.annotation.SyncanoField;
 import com.syncano.library.data.Profile;
 import com.syncano.library.data.SyncanoFile;
@@ -8,6 +10,7 @@ import com.syncano.library.data.SyncanoFile;
  * Created by sebastian on 2016-11-28.
  */
 
+@SyncanoClass(name = Constants.USER_PROFILE_CLASS_NAME)
 public class InstagramProfile extends Profile {
 
     @SyncanoField(name = "avatar")

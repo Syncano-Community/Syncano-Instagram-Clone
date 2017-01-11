@@ -3,21 +3,20 @@ package com.solid9studio.instagram.screen.createPostScreen;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.application.Instagram;
 import com.solid9studio.instagram.model.syncano.InstaPost;
-import com.solid9studio.instagram.user.InstagramUser;
+import com.solid9studio.instagram.user.InstagramProfile;
 import com.solid9studio.instagram.utilities.Utilities;
+import com.syncano.library.Syncano;
 import com.syncano.library.api.Response;
 import com.syncano.library.callbacks.SyncanoCallback;
 import com.syncano.library.data.SyncanoFile;
@@ -74,11 +73,29 @@ public class CreatePostActivity extends BaseActivity {
     }
 
     private void sharePost() {
-        InstaPost instaPost = new InstaPost();
+        final InstaPost instaPost = new InstaPost();
         instaPost.setPostSummary(imageSummaryText.getText().toString());
         instaPost.setPostImage(new SyncanoFile(avatarFile));
 
-        instaPost.setPostOwner(((Instagram) this.getApplication()).getSyncanoInstance().getUser().getId());
+        //instaPost.setPostOwnerId(((Instagram) this.getApplication()).getSyncanoInstance().getUser().getId());
+
+        Syncano syncano = ((Instagram) this.getApplication()).getSyncanoInstance();
+        InstagramProfile instagramProfile = (InstagramProfile)syncano.getUser().getProfile();
+
+        instaPost.setInstagramProfile(instagramProfile);
+
+        instaPost.getInstagramProfile().fetch(new SyncanoCallback<SyncanoObject>() {
+            @Override
+            public void success(Response<SyncanoObject> response, SyncanoObject result) {
+                onPictureSent();
+            }
+
+            @Override
+            public void failure(Response<SyncanoObject> response) {
+
+            }
+        });
+
 
         instaPost.save(new SyncanoCallback<SyncanoObject>() {
             @Override
@@ -88,6 +105,7 @@ public class CreatePostActivity extends BaseActivity {
 
             @Override
             public void failure(Response<SyncanoObject> response) {
+
                 onPictureSent();
             }
         });

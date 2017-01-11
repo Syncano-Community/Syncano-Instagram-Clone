@@ -6,16 +6,21 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.model.Comment;
-import com.solid9studio.instagram.model.Post;
+import com.solid9studio.instagram.model.syncano.InstaPost;
+import com.solid9studio.instagram.user.InstagramProfile;
+import com.syncano.library.Syncano;
+import com.syncano.library.api.Response;
+import com.syncano.library.callbacks.SyncanoCallback;
+import com.syncano.library.data.SyncanoObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,13 +39,15 @@ public class PostActivity extends BaseActivity {
     @BindView(R.id.content_list)
     RecyclerView recyclerView;
 
-    private long postId;
-    private Post post;
+    private int postId;
+    private InstaPost post;
+
     private PostContentAdapter adapter = new PostContentAdapter();
 
-    public static Intent getActivityIntent(Context context, long postId) {
+    public static Intent getActivityIntent(Context context, int postId) {
         Intent intent = new Intent(context, PostActivity.class);
         intent.putExtra(EXTRA_POST_ID, postId);
+
         return intent;
     }
 
@@ -50,7 +57,7 @@ public class PostActivity extends BaseActivity {
         setContentView(R.layout.activity_post);
         ButterKnife.bind(this);
 
-        postId = getIntent().getExtras().getLong(EXTRA_POST_ID);
+        postId = getIntent().getExtras().getInt(EXTRA_POST_ID);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -65,19 +72,35 @@ public class PostActivity extends BaseActivity {
         downloadPost(postId);
     }
 
-    public void downloadPost(long postId) {
-        Post newPost = new Post();
-        newPost.setId(postId);
-        newPost.setUserId(postId);
-        newPost.setCreatedAt(Calendar.getInstance().getTime());
-        newPost.setImageUrl("http://www.walldevil.com/wallpapers/a73/wallpaper-football-warsaw-stadium-national-hobbit.jpg");
-        newPost.setText("Caption under the image.");
+    public void downloadPost(int postId) {
+        InstaPost instaPost = new InstaPost();
+        instaPost.setId(postId);
 
-        if (newPost != null) {
-            post = newPost;
-            displayPost(newPost);
-            downloadComments(post.getId());
-        }
+        instaPost.fetch(new SyncanoCallback<InstaPost>() {
+            @Override
+            public void success(Response<InstaPost> response, InstaPost result) {
+
+                post = result;
+                if(result.getInstagramProfile() != null)
+                {
+                    result.getInstagramProfile().fetch(new SyncanoCallback<SyncanoObject>() {
+                        @Override
+                        public void success(Response<SyncanoObject> response, SyncanoObject result) {
+
+                            post.setInstagramProfile((InstagramProfile) result);
+                            displayPost(post);
+                            downloadComments(post.getId());
+                        }
+
+                        @Override
+                        public void failure(Response<SyncanoObject> response) { }
+                    });
+                }
+            }
+
+            @Override
+            public void failure(Response<InstaPost> response) { }
+        });
     }
 
     public void downloadComments(long postId) {
@@ -92,7 +115,7 @@ public class PostActivity extends BaseActivity {
         displayComments(comments);
     }
 
-    public void displayPost(Post post) {
+    public void displayPost(InstaPost post) {
         downloadProgress.setVisibility(View.GONE);
         swipeRefreshLayout.setRefreshing(false);
         adapter.setData(post, null);

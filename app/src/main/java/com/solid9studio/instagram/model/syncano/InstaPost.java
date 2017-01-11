@@ -1,5 +1,7 @@
 package com.solid9studio.instagram.model.syncano;
 
+import com.solid9studio.instagram.user.InstagramProfile;
+import com.solid9studio.instagram.user.InstagramUser;
 import com.syncano.library.annotation.SyncanoClass;
 import com.syncano.library.annotation.SyncanoField;
 import com.syncano.library.data.SyncanoFile;
@@ -14,7 +16,7 @@ public class InstaPost extends SyncanoObject {
 
     public static final String FIELD_SUMMARY = "summary";
     public static final String FIELD_POST_IMAGE = "post_image";
-    public static final String FIELD_POST_OWNER = "post_owner";
+    public static final String FIELD_POST_OWNER = "post_owner_id";
 
     @SyncanoField(name = FIELD_POST_IMAGE)
     private SyncanoFile postImage;
@@ -23,7 +25,7 @@ public class InstaPost extends SyncanoObject {
     private String postSummary;
 
     @SyncanoField(name = FIELD_POST_OWNER)
-    private int postOwner;
+    private InstagramProfile instagramProfile;
 
     public SyncanoFile getPostImage() {
         return postImage;
@@ -41,11 +43,21 @@ public class InstaPost extends SyncanoObject {
         this.postSummary = postSummary;
     }
 
-    public int getPostOwner() {
-        return postOwner;
+    public InstagramProfile getInstagramProfile() {
+        return instagramProfile;
     }
 
-    public void setPostOwner(int postOwner) {
-        this.postOwner = postOwner;
+    public void setInstagramProfile(InstagramProfile instagramProfile) {
+        this.instagramProfile = instagramProfile;
     }
+
+
+    /*
+    public int getPostOwnerId() {
+        return postOwnerId;
+    }
+
+    public void setPostOwnerId(int postOwnerId) {
+        this.postOwnerId = postOwnerId;
+    }*/
 }

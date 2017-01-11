@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.Row;
-import com.solid9studio.instagram.model.Post;
+import com.solid9studio.instagram.model.syncano.InstaPost;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -25,9 +25,9 @@ public class PostContentRow extends Row {
 
     public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm");
 
-    private Post post;
+    private InstaPost post;
 
-    public PostContentRow(long id, Post post) {
+    public PostContentRow(long id, InstaPost post) {
         super(id);
         this.post = post;
     }
@@ -43,8 +43,10 @@ public class PostContentRow extends Row {
         h.topView.setTag(post);
 
         h.timeText.setText(SDF.format(post.getCreatedAt()));
-        h.postCaption.setText(post.getText());
-        Picasso.with(h.topView.getContext()).load(post.getImageUrl()).into(h.postImage);
+        h.postCaption.setText(post.getPostSummary());
+        h.userName.setText(post.getInstagramProfile().getName());
+        Picasso.with(h.topView.getContext()).load(post.getPostImage().getLink()).into(h.postImage);
+
     }
 
     // ==================== ViewHolder ==================== //

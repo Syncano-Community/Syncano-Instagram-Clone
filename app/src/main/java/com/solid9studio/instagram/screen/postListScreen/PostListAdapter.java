@@ -3,8 +3,8 @@ package com.solid9studio.instagram.screen.postListScreen;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.solid9studio.instagram.model.Post;
 import com.solid9studio.instagram.Row;
+import com.solid9studio.instagram.model.syncano.InstaPost;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private static final int TYPE_POST = 1;
 
-    private ArrayList<Post> posts = new ArrayList<>();
+    private ArrayList<InstaPost> posts = new ArrayList<>();
     private ArrayList<Row> rows = new ArrayList<>();
 
     @Override
@@ -49,7 +49,7 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return rows.size();
     }
 
-    public void setData(List<Post> newPosts) {
+    public void setData(List<InstaPost> newPosts) {
         if (newPosts != null) {
             posts = new ArrayList<>(newPosts);
         } else {
@@ -63,7 +63,7 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         ArrayList<Row> newRows = new ArrayList<>();
 
-        for (Post post : posts) {
+        for (InstaPost post : posts) {
             newRows.add(new PostRow(post.getId(), post));
         }
 

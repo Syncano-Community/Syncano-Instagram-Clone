@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.solid9studio.instagram.R;
-import com.solid9studio.instagram.model.Post;
 import com.solid9studio.instagram.Row;
+import com.solid9studio.instagram.model.syncano.InstaPost;
 import com.solid9studio.instagram.screen.postScreen.PostActivity;
 
 import butterknife.BindView;
@@ -21,9 +21,9 @@ import butterknife.ButterKnife;
 
 public class PostRow extends Row {
 
-    private Post post;
+    private InstaPost post;
 
-    public PostRow(long id, Post post) {
+    public PostRow(long id, InstaPost post) {
         super(id);
         this.post = post;
     }
@@ -38,7 +38,7 @@ public class PostRow extends Row {
         ViewHolder h = (ViewHolder) holder;
         h.topView.setTag(post);
 
-        h.text.setText(post.getText());
+        h.text.setText(post.getPostSummary());
     }
 
     // ==================== ViewHolder ==================== //
@@ -59,7 +59,7 @@ public class PostRow extends Row {
         @Override
         public void onClick(View v) {
             Context context = v.getContext();
-            Post post = (Post)v.getTag();
+            InstaPost post = (InstaPost)v.getTag();
             if (post != null) {
                 context.startActivity(PostActivity.getActivityIntent(context, post.getId()));
             }

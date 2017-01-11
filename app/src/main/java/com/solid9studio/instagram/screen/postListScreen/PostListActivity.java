@@ -15,10 +15,13 @@ import android.view.View;
 
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
-import com.solid9studio.instagram.model.Post;
+import com.solid9studio.instagram.model.syncano.InstaPost;
 import com.solid9studio.instagram.screen.createPostScreen.CreatePostActivity;
 import com.solid9studio.instagram.screen.profileScreen.ProfileActivity;
 import com.solid9studio.instagram.screen.settingsScreen.SettingsActivity;
+import com.syncano.library.Syncano;
+import com.syncano.library.api.ResponseGetList;
+import com.syncano.library.callbacks.SyncanoListCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,16 +96,34 @@ public class PostListActivity extends BaseActivity {
     }
 
     private void downloadPosts() {
-        // Download mockup
-        ArrayList<Post> posts = new ArrayList<>(3);
-        for(int i = 0; i < 3; i++) {
-            Post post = new Post();
-            post.setId(i + 1);
-            post.setText("This is post with id: " + post.getId());
-            posts.add(post);
-        }
 
-        displayPosts(posts);
+        Syncano.please(InstaPost.class).get(new SyncanoListCallback<InstaPost>() {
+              @Override
+              public void success(ResponseGetList<InstaPost> response, List<InstaPost> result) {
+                  List<InstaPost> postList = response.getData();
+                 // ArrayList<Post> posts = new ArrayList<>();
+
+                  displayPosts(result);
+                  /*
+                  for (int i = 0; i< postList.size(); i++)
+                  {
+                      InstaPost instaPost = postList.get(i);
+                      Post post = new Post();
+                      post.setId(i + 1);
+                      post.setText(instaPost.getPostSummary());
+                      post.setCreatedAt(instaPost.getCreatedAt());
+                      post.setImageUrl(instaPost.getPostImage().getLink());
+                      post.setUserId(instaPost.getPostOwnerId());
+
+                      posts.add(post);
+
+                  }*/
+              }
+
+              @Override
+              public void failure(ResponseGetList<InstaPost> response) {
+            }
+          });
     }
 
     public void goToSettings() {
@@ -113,7 +134,7 @@ public class PostListActivity extends BaseActivity {
         startActivity(ProfileActivity.getActivityIntent(this));
     }
 
-    private void displayPosts(List<Post> posts) {
+    private void displayPosts(List<InstaPost> posts) {
         swipeRefreshLayout.setRefreshing(false);
         adapter.setData(posts);
         adapter.notifyDataSetChanged();
