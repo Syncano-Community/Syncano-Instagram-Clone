@@ -3,9 +3,11 @@ package com.solid9studio.instagram.application;
 import android.app.Application;
 
 import com.solid9studio.instagram.constant.Constants;
+import com.solid9studio.instagram.push.GetApplicationTokenTask;
 import com.solid9studio.instagram.user.InstagramUser;
 import com.syncano.library.Syncano;
 import com.syncano.library.SyncanoBuilder;
+import com.syncano.library.data.PushDevice;
 
 /**
  * Created by sebastian on 2016-11-23.
