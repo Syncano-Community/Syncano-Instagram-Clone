@@ -5,12 +5,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.Row;
 import com.solid9studio.instagram.model.InstaPost;
 import com.solid9studio.instagram.screen.postScreen.PostActivity;
+import com.solid9studio.instagram.screen.postScreen.PostContentRow;
+import com.solid9studio.instagram.view.SquareImageView;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +43,10 @@ public class PostRow extends Row {
         h.topView.setTag(post);
 
         h.text.setText(post.getPostSummary());
+        h.author.setText(post.getInstagramProfile().getName());
+        h.creationDate.setText(PostContentRow.SDF.format(post.getCreatedAt()));
+        Picasso.with(h.topView.getContext()).load(post.getPostImage().getLink()).into(h.image);
+        Picasso.with(h.topView.getContext()).load(post.getInstagramProfile().getAvatar().getLink()).into(h.userAvatarImage);
     }
 
     // ==================== ViewHolder ==================== //
@@ -46,6 +54,18 @@ public class PostRow extends Row {
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.post_caption)
         TextView text;
+
+        @BindView(R.id.post_user_name)
+        TextView author;
+
+        @BindView(R.id.post_time_text)
+        TextView creationDate;
+
+        @BindView(R.id.post_image)
+        SquareImageView image;
+
+        @BindView(R.id.post_user_avatar)
+        ImageView userAvatarImage;
 
         View topView;
 

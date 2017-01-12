@@ -2,6 +2,7 @@ package com.solid9studio.instagram.screen.postListScreen;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -22,6 +23,8 @@ import com.solid9studio.instagram.screen.settingsScreen.SettingsActivity;
 import com.syncano.library.Syncano;
 import com.syncano.library.api.ResponseGetList;
 import com.syncano.library.callbacks.SyncanoListCallback;
+import com.syncano.library.choice.SortOrder;
+import com.syncano.library.data.SyncanoObject;
 
 import java.util.List;
 
@@ -96,12 +99,11 @@ public class PostListActivity extends BaseActivity {
 
     private void downloadPosts() {
 
-        Syncano.please(InstaPost.class).get(new SyncanoListCallback<InstaPost>() {
+        Syncano.please(InstaPost.class).orderBy(SyncanoObject.FIELD_CREATED_AT, SortOrder.DESCENDING).get(new SyncanoListCallback<InstaPost>() {
               @Override
               public void success(ResponseGetList<InstaPost> response, List<InstaPost> result) {
 
-                  List<InstaPost> postList = response.getData();
-                  displayPosts(result);
+                  new FetchPostsUsers().execute(result);
               }
 
               @Override
@@ -122,5 +124,29 @@ public class PostListActivity extends BaseActivity {
         swipeRefreshLayout.setRefreshing(false);
         adapter.setData(posts);
         adapter.notifyDataSetChanged();
+    }
+
+    private class FetchPostsUsers extends AsyncTask<List<InstaPost> , Void, List<InstaPost>>
+    {
+
+        @Override
+        protected List<InstaPost> doInBackground(List<InstaPost> ...params) {
+
+            List<InstaPost> result = params[0];
+
+            for(int i = 0; i <result.size(); i++)
+            {
+                result.get(i).getInstagramProfile().fetch();
+            }
+
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(List<InstaPost> result) {
+
+            displayPosts(result);
+        }
     }
 }

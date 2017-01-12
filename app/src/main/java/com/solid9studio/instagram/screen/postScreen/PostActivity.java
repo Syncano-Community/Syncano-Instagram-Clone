@@ -78,7 +78,6 @@ public class PostActivity extends BaseActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-        //submitCommentButton.setOnClickListener(commentButtonOnClickListener);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -125,7 +124,7 @@ public class PostActivity extends BaseActivity {
         profilesToFetch = 0;
         profilesFetched = 0;
 
-        Syncano.please(InstaComment.class).orderBy("created_at", SortOrder.DESCENDING).where().in(FIELD_POST_OWNER_ID, new Integer[] { postId }).get(new SyncanoCallback<List<InstaComment>>() {
+        Syncano.please(InstaComment.class).orderBy(SyncanoObject.FIELD_CREATED_AT, SortOrder.DESCENDING).where().in(FIELD_POST_OWNER_ID, new Integer[] { postId }).get(new SyncanoCallback<List<InstaComment>>() {
             @Override
             public void success(Response<List<InstaComment>> response, List<InstaComment> result) {
                 commentsToDisplay = result;
