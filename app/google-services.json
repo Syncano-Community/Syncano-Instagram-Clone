@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "234266769369",
+    "project_id": "syncano-instagram-clone"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:234266769369:android:06be723a9e52cea8",
+        "android_client_info": {
+          "package_name": "com.solid9studio.instagram"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDX1J1sLL20f3x2TvzQKaoQEt6At1aEI4o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
