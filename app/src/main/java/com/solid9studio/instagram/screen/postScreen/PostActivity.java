@@ -2,6 +2,7 @@ package com.solid9studio.instagram.screen.postScreen;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -55,11 +56,6 @@ public class PostActivity extends BaseActivity {
     private InstaPost post;
 
     private PostContentAdapter adapter = new PostContentAdapter();
-
-    //Variables needed to display comments with all info properly
-    private int profilesToFetch;
-    private int profilesFetched;
-    private List<InstaComment> commentsToDisplay;
 
     public static Intent getActivityIntent(Context context, int postId) {
         Intent intent = new Intent(context, PostActivity.class);
@@ -121,30 +117,10 @@ public class PostActivity extends BaseActivity {
 
     public void downloadComments(int postId) {
 
-        profilesToFetch = 0;
-        profilesFetched = 0;
-
         Syncano.please(InstaComment.class).orderBy(SyncanoObject.FIELD_CREATED_AT, SortOrder.DESCENDING).where().in(FIELD_POST_OWNER_ID, new Integer[] { postId }).get(new SyncanoCallback<List<InstaComment>>() {
             @Override
             public void success(Response<List<InstaComment>> response, List<InstaComment> result) {
-                commentsToDisplay = result;
-
-                for (int i = 0; i < result.size(); i++) {
-
-                    profilesToFetch = result.size();
-                    result.get(i).getInstagramProfile().fetch(new SyncanoCallback<SyncanoObject>() {
-
-                        @Override
-                        public void success(Response<SyncanoObject> response, SyncanoObject result) {
-                            onProfileCommentFetched();
-                        }
-
-                        @Override
-                        public void failure(Response<SyncanoObject> response) {
-
-                        }
-                    });
-                }
+                new FetchPostsComments().execute(result);
             }
 
             @Override
@@ -152,16 +128,6 @@ public class PostActivity extends BaseActivity {
 
             }
         });
-    }
-
-
-    private void onProfileCommentFetched()
-    {
-        profilesFetched ++;
-        if(profilesToFetch == profilesFetched)
-        {
-            displayComments(commentsToDisplay);
-        }
     }
 
     public void displayPost(InstaPost post) {
@@ -207,5 +173,28 @@ public class PostActivity extends BaseActivity {
     private boolean validateComment()
     {
         return commentEditText.getText().length() >= 1;
+    }
+
+    private class FetchPostsComments extends AsyncTask<List<InstaComment> , Void, List<InstaComment>>
+    {
+        @Override
+        protected List<InstaComment> doInBackground(List<InstaComment> ...params) {
+
+            List<InstaComment>result = params[0];
+
+            for(int i = 0; i <result.size(); i++)
+            {
+                result.get(i).getInstagramProfile().fetch();
+            }
+
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(List<InstaComment>  result) {
+
+            displayComments(result);
+        }
     }
 }
