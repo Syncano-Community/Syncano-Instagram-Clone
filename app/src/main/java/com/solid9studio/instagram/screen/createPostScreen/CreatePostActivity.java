@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.application.Instagram;
-import com.solid9studio.instagram.model.syncano.InstaPost;
+import com.solid9studio.instagram.model.InstaPost;
 import com.solid9studio.instagram.user.InstagramProfile;
 import com.solid9studio.instagram.utilities.Utilities;
 import com.syncano.library.Syncano;
@@ -102,7 +102,6 @@ public class CreatePostActivity extends BaseActivity {
 
             @Override
             public void failure(Response<SyncanoObject> response) {
-
                 onPictureSent();
             }
         });

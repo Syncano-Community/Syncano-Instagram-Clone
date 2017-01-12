@@ -3,9 +3,9 @@ package com.solid9studio.instagram.screen.postScreen;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.solid9studio.instagram.model.Comment;
+import com.solid9studio.instagram.model.InstaComment;
 import com.solid9studio.instagram.Row;
-import com.solid9studio.instagram.model.syncano.InstaPost;
+import com.solid9studio.instagram.model.InstaPost;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class PostContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static final int TYPE_COMMENT = 2;
 
     private InstaPost post = null;
-    private ArrayList<Comment> comments = new ArrayList<>();
+    private ArrayList<InstaComment> comments = new ArrayList<>();
     private ArrayList<Row> rows = new ArrayList<>();
 
     @Override
@@ -56,7 +56,7 @@ public class PostContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return rows.size();
     }
 
-    public void setData(InstaPost post, List<Comment> newComments) {
+    public void setData(InstaPost post, List<InstaComment> newComments) {
         this.post = post;
         if (newComments != null) {
             comments = new ArrayList<>(newComments);
@@ -73,7 +73,7 @@ public class PostContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         if (post != null) {
             newRows.add(new PostContentRow(0, post)); // Header
 
-            for (Comment comment : comments) {
+            for (InstaComment comment : comments) {
                 newRows.add(new CommentRow(comment.getId(), comment));
             }
         }

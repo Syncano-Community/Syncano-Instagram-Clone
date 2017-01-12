@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.Row;
-import com.solid9studio.instagram.model.syncano.InstaPost;
+import com.solid9studio.instagram.model.InstaPost;
 import com.solid9studio.instagram.screen.postScreen.PostActivity;
 
 import butterknife.BindView;

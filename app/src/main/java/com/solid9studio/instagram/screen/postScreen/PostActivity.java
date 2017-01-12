@@ -6,17 +6,17 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
-import com.solid9studio.instagram.model.Comment;
-import com.solid9studio.instagram.model.syncano.InstaPost;
+import com.solid9studio.instagram.model.InstaComment;
+import com.solid9studio.instagram.model.InstaPost;
 import com.solid9studio.instagram.user.InstagramProfile;
 import com.syncano.library.Syncano;
 import com.syncano.library.api.Response;
+import com.syncano.library.api.ResponseGetList;
 import com.syncano.library.callbacks.SyncanoCallback;
 import com.syncano.library.data.SyncanoObject;
 
@@ -81,21 +81,20 @@ public class PostActivity extends BaseActivity {
             public void success(Response<InstaPost> response, InstaPost result) {
 
                 post = result;
-                if(result.getInstagramProfile() != null)
-                {
-                    result.getInstagramProfile().fetch(new SyncanoCallback<SyncanoObject>() {
-                        @Override
-                        public void success(Response<SyncanoObject> response, SyncanoObject result) {
 
-                            post.setInstagramProfile((InstagramProfile) result);
-                            displayPost(post);
-                            downloadComments(post.getId());
-                        }
+                result.getInstagramProfile().fetch(new SyncanoCallback<SyncanoObject>() {
+                    @Override
+                    public void success(Response<SyncanoObject> response, SyncanoObject result) {
 
-                        @Override
-                        public void failure(Response<SyncanoObject> response) { }
-                    });
-                }
+                        post.setInstagramProfile((InstagramProfile) result);
+                        displayPost(post);
+
+                        downloadComments(post.getId());
+                    }
+
+                    @Override
+                    public void failure(Response<SyncanoObject> response) { }
+                });
             }
 
             @Override
@@ -103,16 +102,19 @@ public class PostActivity extends BaseActivity {
         });
     }
 
-    public void downloadComments(long postId) {
-        ArrayList<Comment> comments = new ArrayList<>(3);
-        for(int i = 0; i < 8; i++) {
-            Comment comment = new Comment();
-            comment.setId(i + 1);
-            comment.setText("This is comment with id: " + comment.getId());
-            comments.add(comment);
-        }
+    public void downloadComments(int postId) {
 
-        displayComments(comments);
+        Syncano.please(InstaComment.class).where().in("post_id", new Integer[] {postId }).get(new SyncanoCallback<List<InstaComment>>() {
+            @Override
+            public void success(Response<List<InstaComment>> response, List<InstaComment> result) {
+                displayComments(result);
+            }
+
+            @Override
+            public void failure(Response<List<InstaComment>> response) {
+
+            }
+        });
     }
 
     public void displayPost(InstaPost post) {
@@ -121,7 +123,7 @@ public class PostActivity extends BaseActivity {
         adapter.setData(post, null);
     }
 
-    public void displayComments(List<Comment> comments) {
+    public void displayComments(List<InstaComment> comments) {
         adapter.setData(post, comments);
     }
 }

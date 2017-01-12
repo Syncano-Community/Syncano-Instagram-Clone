@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.Row;
-import com.solid9studio.instagram.model.syncano.InstaPost;
+import com.solid9studio.instagram.model.InstaPost;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;

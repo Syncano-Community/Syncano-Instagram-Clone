@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.solid9studio.instagram.Row;
-import com.solid9studio.instagram.model.syncano.InstaPost;
+import com.solid9studio.instagram.model.InstaPost;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -15,7 +15,7 @@ import android.view.View;
 
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
-import com.solid9studio.instagram.model.syncano.InstaPost;
+import com.solid9studio.instagram.model.InstaPost;
 import com.solid9studio.instagram.screen.createPostScreen.CreatePostActivity;
 import com.solid9studio.instagram.screen.profileScreen.ProfileActivity;
 import com.solid9studio.instagram.screen.settingsScreen.SettingsActivity;
@@ -23,7 +23,6 @@ import com.syncano.library.Syncano;
 import com.syncano.library.api.ResponseGetList;
 import com.syncano.library.callbacks.SyncanoListCallback;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -100,24 +99,9 @@ public class PostListActivity extends BaseActivity {
         Syncano.please(InstaPost.class).get(new SyncanoListCallback<InstaPost>() {
               @Override
               public void success(ResponseGetList<InstaPost> response, List<InstaPost> result) {
+
                   List<InstaPost> postList = response.getData();
-                 // ArrayList<Post> posts = new ArrayList<>();
-
                   displayPosts(result);
-                  /*
-                  for (int i = 0; i< postList.size(); i++)
-                  {
-                      InstaPost instaPost = postList.get(i);
-                      Post post = new Post();
-                      post.setId(i + 1);
-                      post.setText(instaPost.getPostSummary());
-                      post.setCreatedAt(instaPost.getCreatedAt());
-                      post.setImageUrl(instaPost.getPostImage().getLink());
-                      post.setUserId(instaPost.getPostOwnerId());
-
-                      posts.add(post);
-
-                  }*/
               }
 
               @Override
