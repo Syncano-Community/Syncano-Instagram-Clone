@@ -104,7 +104,7 @@ public class PostActivity extends BaseActivity {
 
     public void downloadComments(int postId) {
 
-        Syncano.please(InstaComment.class).where().in("post_id", new Integer[] {postId }).get(new SyncanoCallback<List<InstaComment>>() {
+        Syncano.please(InstaComment.class).where().in("post_id", new Integer[] { postId }).get(new SyncanoCallback<List<InstaComment>>() {
             @Override
             public void success(Response<List<InstaComment>> response, List<InstaComment> result) {
                 displayComments(result);

@@ -65,6 +65,7 @@ public class PostContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         generateRows();
+        notifyDataSetChanged();
     }
 
     private void generateRows() {
