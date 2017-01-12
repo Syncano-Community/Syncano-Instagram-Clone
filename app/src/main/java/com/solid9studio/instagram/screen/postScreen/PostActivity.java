@@ -21,6 +21,7 @@ import com.syncano.library.Syncano;
 import com.syncano.library.api.Response;
 import com.syncano.library.api.ResponseGetList;
 import com.syncano.library.callbacks.SyncanoCallback;
+import com.syncano.library.choice.SortOrder;
 import com.syncano.library.data.SyncanoObject;
 
 import java.util.ArrayList;
@@ -124,7 +125,7 @@ public class PostActivity extends BaseActivity {
         profilesToFetch = 0;
         profilesFetched = 0;
 
-        Syncano.please(InstaComment.class).where().in(FIELD_POST_OWNER_ID, new Integer[] { postId }).get(new SyncanoCallback<List<InstaComment>>() {
+        Syncano.please(InstaComment.class).orderBy("created_at", SortOrder.DESCENDING).where().in(FIELD_POST_OWNER_ID, new Integer[] { postId }).get(new SyncanoCallback<List<InstaComment>>() {
             @Override
             public void success(Response<List<InstaComment>> response, List<InstaComment> result) {
                 commentsToDisplay = result;
