@@ -7,10 +7,13 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
+import com.solid9studio.instagram.application.Instagram;
 import com.solid9studio.instagram.model.InstaComment;
 import com.solid9studio.instagram.model.InstaPost;
 import com.solid9studio.instagram.user.InstagramProfile;
@@ -25,10 +28,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class PostActivity extends BaseActivity {
 
     public static final String EXTRA_POST_ID = "EXTRA_POST_ID";
+    public static final String FIELD_POST_OWNER_ID = "post_id";
 
     @BindView(R.id.download_progress)
     ProgressBar downloadProgress;
@@ -39,10 +44,21 @@ public class PostActivity extends BaseActivity {
     @BindView(R.id.content_list)
     RecyclerView recyclerView;
 
+    @BindView(R.id.submit_comment)
+    Button submitCommentButton;
+
+    @BindView(R.id.comment_edit_text)
+    EditText commentEditText;
+
     private int postId;
     private InstaPost post;
 
     private PostContentAdapter adapter = new PostContentAdapter();
+
+    //Variables needed to display comments with all info properly
+    private int profilesToFetch;
+    private int profilesFetched;
+    private List<InstaComment> commentsToDisplay;
 
     public static Intent getActivityIntent(Context context, int postId) {
         Intent intent = new Intent(context, PostActivity.class);
@@ -61,6 +77,7 @@ public class PostActivity extends BaseActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+        //submitCommentButton.setOnClickListener(commentButtonOnClickListener);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -104,10 +121,30 @@ public class PostActivity extends BaseActivity {
 
     public void downloadComments(int postId) {
 
-        Syncano.please(InstaComment.class).where().in("post_id", new Integer[] { postId }).get(new SyncanoCallback<List<InstaComment>>() {
+        profilesToFetch = 0;
+        profilesFetched = 0;
+
+        Syncano.please(InstaComment.class).where().in(FIELD_POST_OWNER_ID, new Integer[] { postId }).get(new SyncanoCallback<List<InstaComment>>() {
             @Override
             public void success(Response<List<InstaComment>> response, List<InstaComment> result) {
-                displayComments(result);
+                commentsToDisplay = result;
+
+                for (int i = 0; i < result.size(); i++) {
+
+                    profilesToFetch = result.size();
+                    result.get(i).getInstagramProfile().fetch(new SyncanoCallback<SyncanoObject>() {
+
+                        @Override
+                        public void success(Response<SyncanoObject> response, SyncanoObject result) {
+                            onProfileCommentFetched();
+                        }
+
+                        @Override
+                        public void failure(Response<SyncanoObject> response) {
+
+                        }
+                    });
+                }
             }
 
             @Override
@@ -115,6 +152,16 @@ public class PostActivity extends BaseActivity {
 
             }
         });
+    }
+
+
+    private void onProfileCommentFetched()
+    {
+        profilesFetched ++;
+        if(profilesToFetch == profilesFetched)
+        {
+            displayComments(commentsToDisplay);
+        }
     }
 
     public void displayPost(InstaPost post) {
@@ -125,5 +172,40 @@ public class PostActivity extends BaseActivity {
 
     public void displayComments(List<InstaComment> comments) {
         adapter.setData(post, comments);
+    }
+
+    @OnClick(R.id.submit_comment)
+    public void commentButtonOnClickListener (){
+        if(validateComment())
+        {
+            InstaComment instaComment = new InstaComment();
+            InstaPost instaPost = new InstaPost();
+            instaPost.setId(postId);
+
+            Syncano syncano = ((Instagram) this.getApplication()).getSyncanoInstance();
+            InstagramProfile instagramProfile = (InstagramProfile)syncano.getUser().getProfile();
+            instaComment.setInstagramProfile(instagramProfile);
+
+            instaComment.setInstaPost(post);
+            instaComment.setText(commentEditText.getText().toString());
+            commentEditText.setText(null);
+
+            instaComment.save(new SyncanoCallback<SyncanoObject>() {
+                @Override
+                public void success(Response<SyncanoObject> response, SyncanoObject result) {
+                    downloadComments(postId);
+                }
+
+                @Override
+                public void failure(Response<SyncanoObject> response) {
+
+                }
+            });
+        }
+    }
+
+    private boolean validateComment()
+    {
+        return commentEditText.getText().length() >= 1;
     }
 }

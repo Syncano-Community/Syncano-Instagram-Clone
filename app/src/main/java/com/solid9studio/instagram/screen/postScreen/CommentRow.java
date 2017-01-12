@@ -37,6 +37,7 @@ public class CommentRow extends Row {
         h.topView.setTag(comment);
 
         h.text.setText(comment.getText());
+        h.authorText.setText(comment.getInstagramProfile().getName());
     }
 
     // ==================== ViewHolder ==================== //
@@ -44,6 +45,9 @@ public class CommentRow extends Row {
     public static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.comment_text)
         TextView text;
+
+        @BindView(R.id.comment_user)
+        TextView authorText;
 
         View topView;
 

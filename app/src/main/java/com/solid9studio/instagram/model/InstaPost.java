@@ -16,7 +16,6 @@ public class InstaPost extends SyncanoObject {
     public static final String FIELD_SUMMARY = "summary";
     public static final String FIELD_POST_IMAGE = "post_image";
     public static final String FIELD_POST_OWNER = "post_owner_id";
-    public static final String FIELD_POST_COMMENT = "comments_ids";
 
     @SyncanoField(name = FIELD_POST_IMAGE)
     private SyncanoFile postImage;
