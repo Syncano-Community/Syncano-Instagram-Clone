@@ -172,7 +172,7 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
 
         if (v.getId() == R.id.like_container) {
             // On like button click
-            if (post != null) {
+            if (post != null && post.isLikedByMe() == false) {
                 notifyCommentedPost(post.getInstagramProfile().getPushUrl());
             }
         } else if (v.getId() == R.id.post_top_view) {

@@ -6,6 +6,8 @@ import com.syncano.library.annotation.SyncanoField;
 import com.syncano.library.data.SyncanoFile;
 import com.syncano.library.data.SyncanoObject;
 
+import java.util.List;
+
 /**
  * Created by Sebastian on 2017-01-10.
  */
@@ -16,6 +18,7 @@ public class InstaPost extends SyncanoObject {
     public static final String FIELD_SUMMARY = "summary";
     public static final String FIELD_POST_IMAGE = "post_image";
     public static final String FIELD_POST_OWNER = "post_owner_id";
+    public static final String FIELD_POST_LIKE_USERS = "like_users";
 
     @SyncanoField(name = FIELD_POST_IMAGE)
     private SyncanoFile postImage;
@@ -26,10 +29,8 @@ public class InstaPost extends SyncanoObject {
     @SyncanoField(name = FIELD_POST_OWNER)
     private InstagramProfile instagramProfile;
 
-    /* Local data */
-
-    private int likeCount;
-    private boolean isLikedByMe;
+    @SyncanoField(name = FIELD_POST_LIKE_USERS)
+    private List<Double> likeCount;
 
     public SyncanoFile getPostImage() {
         return postImage;
@@ -55,19 +56,29 @@ public class InstaPost extends SyncanoObject {
         this.instagramProfile = instagramProfile;
     }
 
-    public int getLikeCount() {
+    public boolean isLikedByMe()
+    {
+        if(getLikeCount() != null)
+        {
+            for(int i = 0; i <getLikeCount().size(); i++)
+            {
+                int toCompare = getLikeCount().get(i).intValue();
+                int id = getInstagramProfile().getId();
+
+                if(id == toCompare)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public List<Double> getLikeCount() {
         return likeCount;
     }
 
-    public void setLikeCount(int likeCount) {
+    public void setLikeCount(List<Double> likeCount) {
         this.likeCount = likeCount;
-    }
-
-    public boolean isLikedByMe() {
-        return isLikedByMe;
-    }
-
-    public void setLikedByMe(boolean likedByMe) {
-        isLikedByMe = likedByMe;
     }
 }

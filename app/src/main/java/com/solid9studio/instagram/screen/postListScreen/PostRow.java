@@ -50,7 +50,15 @@ public class PostRow extends Row {
         h.creationDate.setText(SDF.format(post.getCreatedAt()));
         Picasso.with(h.topView.getContext()).load(post.getPostImage().getLink()).into(h.image);
         Picasso.with(h.topView.getContext()).load(post.getInstagramProfile().getAvatar().getLink()).into(h.userAvatarImage);
-        setLikes(h, post.getLikeCount(), post.isLikedByMe());
+
+        int likesCount = 0;
+
+        if(post.getLikeCount() != null)
+        {
+            likesCount = post.getLikeCount().size();
+        }
+
+        setLikes(h, likesCount, post.isLikedByMe());
     }
 
     private void setLikes(ViewHolder h, int likeCount, boolean isLikedByMe) {

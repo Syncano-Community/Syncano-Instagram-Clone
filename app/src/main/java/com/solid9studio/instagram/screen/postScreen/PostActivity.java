@@ -163,7 +163,7 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
                 @Override
                 public void success(Response<SyncanoObject> response, SyncanoObject result) {
                     downloadComments(postId);
-                    notifyCommentedPost();
+                    notifyCommentedPost(post.getInstagramProfile().getPushUrl());
                 }
 
                 @Override
@@ -187,14 +187,11 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
             for (int i = 0; i < result.size(); i++) {
                 result.get(i).getInstagramProfile().fetch();
             }
-
-
             return result;
         }
 
         @Override
         protected void onPostExecute(List<InstaComment> result) {
-
             displayComments(result);
         }
     }
@@ -204,16 +201,15 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
         InstaPost post = (InstaPost) v.getTag();
 
         if (v.getId() == R.id.like_container) {
-            // On like button click
-            if (post != null) {
-                //TODO Send like here.
+            if (post != null && post.isLikedByMe() == false) {
+                notifyCommentedPost(post.getInstagramProfile().getPushUrl());
             }
         }
     }
 
-    private void notifyCommentedPost() {
+    private void notifyCommentedPost(String token) {
         JsonObject params = new JsonObject();
-        params.addProperty("target", PreferenceManager.getDefaultSharedPreferences(this).getString(Constants.TOKEN, ""));
+        params.addProperty("target", token);
 
         ((Instagram) this.getApplication()).getSyncanoInstance().runScript(1, params).sendAsync(new SyncanoCallback<Trace>() {
             @Override
