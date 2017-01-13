@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,18 +15,25 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.gson.JsonObject;
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
+import com.solid9studio.instagram.application.Instagram;
+import com.solid9studio.instagram.constant.Constants;
 import com.solid9studio.instagram.model.InstaPost;
+import com.solid9studio.instagram.push.GetApplicationTokenTask;
 import com.solid9studio.instagram.screen.createPostScreen.CreatePostActivity;
 import com.solid9studio.instagram.screen.postScreen.PostActivity;
 import com.solid9studio.instagram.screen.profileScreen.ProfileActivity;
 import com.solid9studio.instagram.screen.settingsScreen.SettingsActivity;
 import com.syncano.library.Syncano;
+import com.syncano.library.api.Response;
 import com.syncano.library.api.ResponseGetList;
+import com.syncano.library.callbacks.SyncanoCallback;
 import com.syncano.library.callbacks.SyncanoListCallback;
 import com.syncano.library.choice.SortOrder;
 import com.syncano.library.data.SyncanoObject;
+import com.syncano.library.data.Trace;
 
 import java.util.List;
 
@@ -69,6 +77,14 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
                 downloadPosts();
             }
         });
+
+        Instagram instagram = (Instagram) this.getApplication();
+        String token = PreferenceManager.getDefaultSharedPreferences(this).getString(Constants.TOKEN, "");
+
+        if (token.isEmpty()) {
+            new GetApplicationTokenTask(getApplicationContext(), instagram.getUser()).execute();
+        }
+
         downloadPosts();
     }
 
@@ -137,9 +153,8 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
 
             for(int i = 0; i <result.size(); i++)
             {
-                result.get(i).getInstagramProfile().fetch();
+               result.get(i).getInstagramProfile().fetch();
             }
-
 
             return result;
         }
@@ -158,7 +173,7 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
         if (v.getId() == R.id.like_container) {
             // On like button click
             if (post != null) {
-                //TODO Send like here.
+                notifyCommentedPost(post.getInstagramProfile().getPushUrl());
             }
         } else if (v.getId() == R.id.post_top_view) {
             // On post click
@@ -166,5 +181,22 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
                 startActivity(PostActivity.getActivityIntent(this, post.getId()));
             }
         }
+    }
+
+    private void notifyCommentedPost(String token) {
+        JsonObject params = new JsonObject();
+        params.addProperty("target", token);
+
+        ((Instagram) this.getApplication()).getSyncanoInstance().runScript(1, params).sendAsync(new SyncanoCallback<Trace>() {
+            @Override
+            public void success(Response<Trace> response, Trace result) {
+
+            }
+
+            @Override
+            public void failure(Response<Trace> response) {
+
+            }
+        });
     }
 }

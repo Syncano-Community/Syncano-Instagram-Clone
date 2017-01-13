@@ -87,7 +87,6 @@ public class LoginActivity extends BaseActivity {
 
     private InstagramUser user;
     private CallbackManager callbackManager;
-    private Response<InstagramUser> loginResponse;
 
     public static Intent getActivityIntent(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);

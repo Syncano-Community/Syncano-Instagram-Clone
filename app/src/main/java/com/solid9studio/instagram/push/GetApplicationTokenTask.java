@@ -7,6 +7,8 @@ import android.util.Log;
 
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.constant.Constants;
+import com.solid9studio.instagram.user.InstagramProfile;
+import com.solid9studio.instagram.user.InstagramUser;
 import com.syncano.library.Syncano;
 import com.syncano.library.api.Response;
 import com.syncano.library.data.PushDevice;
@@ -21,10 +23,15 @@ import java.io.IOException;
  */
 
 public class GetApplicationTokenTask extends AsyncTask<Void, Void, String> {
+    private static final String TAG = MyGcmListenerService.class.getSimpleName();
     private Context ctx;
+    private InstagramUser profile;
 
-    public GetApplicationTokenTask(Context ctx) {
+
+
+    public GetApplicationTokenTask(Context ctx, InstagramUser profile) {
         this.ctx = ctx;
+        this.profile = profile;
     }
 
     @Override
@@ -32,20 +39,22 @@ public class GetApplicationTokenTask extends AsyncTask<Void, Void, String> {
         // get gcm token from Google
         String token = getGCMTokenFromGoogle();
         if (token == null || token.isEmpty()) {
-            Log.w("ASD", "Error getting GCM token from Google");
+            Log.w(TAG, "Error getting GCM token from Google");
             return "";
         }
-        Log.i("ASD", "GCM Registration Token: " + token);
+        Log.i(TAG, "GCM Registration Token: " + token);
 
         // send gcm token to Syncano
         Response syncanoResponse = Syncano.getInstance().registerPushDevice(new PushDevice(token)).send();
         if (!syncanoResponse.isSuccess()) {
-            Log.e("ASD", "Error sending GCM token to Syncano: " + syncanoResponse.getHttpResultCode() + " " + syncanoResponse.getError());
+            Log.e(TAG, "Error sending GCM token to Syncano: " + syncanoResponse.getHttpResultCode() + " " + syncanoResponse.getError());
             return "";
         }
 
         // save token
         PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString(Constants.TOKEN, token).apply();
+        profile.getProfile().setPushUrl(token);
+        profile.getProfile().save();
 
         return token;
     }

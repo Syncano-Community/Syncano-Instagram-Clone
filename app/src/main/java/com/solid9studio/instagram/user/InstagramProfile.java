@@ -22,6 +22,9 @@ public class InstagramProfile extends Profile {
     @SyncanoField(name = "surname")
     protected String surname;
 
+    @SyncanoField(name = "push_url")
+    private String pushUrl;
+
     public String getSurname() {
         return surname;
     }
@@ -44,5 +47,13 @@ public class InstagramProfile extends Profile {
 
     public void setAvatar(SyncanoFile avatar) {
         this.avatar = avatar;
+    }
+
+    public String getPushUrl() {
+        return pushUrl;
+    }
+
+    public void setPushUrl(String pushUrl) {
+        this.pushUrl = pushUrl;
     }
 }

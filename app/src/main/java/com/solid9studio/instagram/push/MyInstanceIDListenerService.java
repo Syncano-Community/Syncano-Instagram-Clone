@@ -19,6 +19,7 @@ package com.solid9studio.instagram.push;
 import android.preference.PreferenceManager;
 
 import com.google.android.gms.iid.InstanceIDListenerService;
+import com.solid9studio.instagram.application.Instagram;
 import com.solid9studio.instagram.constant.Constants;
 
 /**
@@ -35,6 +36,8 @@ public class MyInstanceIDListenerService extends InstanceIDListenerService {
     @Override
     public void onTokenRefresh() {
         PreferenceManager.getDefaultSharedPreferences(this).edit().remove(Constants.TOKEN).apply();
-        new GetApplicationTokenTask(getApplicationContext()).execute();
+        Instagram instagram = (Instagram) this.getApplication();
+
+        new GetApplicationTokenTask(getApplicationContext(), instagram.getUser()).execute();
     }
 }

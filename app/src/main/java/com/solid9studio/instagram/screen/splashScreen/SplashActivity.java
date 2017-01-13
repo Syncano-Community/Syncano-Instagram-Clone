@@ -25,26 +25,21 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        Instagram instagram = (Instagram) this.getApplication();
 
         if (!checkPlayServices()) {
             return;
         }
 
-        token = PreferenceManager.getDefaultSharedPreferences(this).getString(Constants.TOKEN, "");
-
-        if (token.isEmpty()) {
-            new GetApplicationTokenTask(getApplicationContext()).execute();
-        }
-
-        if (isLoggedIn()) {
+        if (isLoggedIn(instagram)) {
             startActivity(PostListActivity.getActivityIntent(this));
         } else {
             startActivity(LoginActivity.getActivityIntent(this));
         }
     }
 
-    private boolean isLoggedIn() {
-        if(((Instagram) this.getApplication()).getUser() != null)
+    private boolean isLoggedIn(Instagram instagram) {
+        if(instagram.getUser() != null)
         {
             return true;
         }
