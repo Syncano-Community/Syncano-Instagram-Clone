@@ -26,6 +26,11 @@ public class InstaPost extends SyncanoObject {
     @SyncanoField(name = FIELD_POST_OWNER)
     private InstagramProfile instagramProfile;
 
+    /* Local data */
+
+    private int likeCount;
+    private boolean isLikedByMe;
+
     public SyncanoFile getPostImage() {
         return postImage;
     }
@@ -48,5 +53,21 @@ public class InstaPost extends SyncanoObject {
 
     public void setInstagramProfile(InstagramProfile instagramProfile) {
         this.instagramProfile = instagramProfile;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public boolean isLikedByMe() {
+        return isLikedByMe;
+    }
+
+    public void setLikedByMe(boolean likedByMe) {
+        isLikedByMe = likedByMe;
     }
 }

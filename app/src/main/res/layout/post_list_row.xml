@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/post_top_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/text_margin"
@@ -38,8 +38,7 @@
             android:id="@+id/post_time_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="11.11.2011 11:11"
-            android:textColor="@color/author_name"/>
+            android:text="11.11.2011 11:11"/>
 
     </LinearLayout>
 
@@ -51,21 +50,22 @@
         android:background="@drawable/rect_outline"/>
 
     <LinearLayout
-        android:id="@+id/likes_container"
+        android:id="@+id/like_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_large"
+        android:clickable="true"
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/likes_icon"
+            android:id="@+id/like_icon"
             android:layout_width="@dimen/like_icon_size"
             android:layout_height="@dimen/like_icon_size"
             android:src="@drawable/heart_gray"
             android:layout_marginRight="@dimen/space_normal"/>
 
         <TextView
-            android:id="@+id/likes_text"
+            android:id="@+id/like_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="16 likes" />
@@ -77,6 +77,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_large"
         android:layout_marginBottom="@dimen/text_margin"
+        android:textColor="@color/post_text"
         android:text="Post caption"/>
 
     <View

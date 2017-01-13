@@ -6,6 +6,8 @@
     android:paddingTop="@dimen/text_margin"
     android:paddingLeft="@dimen/text_margin"
     android:paddingRight="@dimen/text_margin"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
     android:background="@color/comment_background">
 
     <TextView

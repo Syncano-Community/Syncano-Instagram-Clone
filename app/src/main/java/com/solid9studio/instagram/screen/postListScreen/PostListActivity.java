@@ -18,6 +18,7 @@ import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.model.InstaPost;
 import com.solid9studio.instagram.screen.createPostScreen.CreatePostActivity;
+import com.solid9studio.instagram.screen.postScreen.PostActivity;
 import com.solid9studio.instagram.screen.profileScreen.ProfileActivity;
 import com.solid9studio.instagram.screen.settingsScreen.SettingsActivity;
 import com.syncano.library.Syncano;
@@ -32,7 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class PostListActivity extends BaseActivity {
+public class PostListActivity extends BaseActivity implements View.OnClickListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -147,6 +148,23 @@ public class PostListActivity extends BaseActivity {
         protected void onPostExecute(List<InstaPost> result) {
 
             displayPosts(result);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        InstaPost post = (InstaPost)v.getTag();
+
+        if (v.getId() == R.id.like_container) {
+            // On like button click
+            if (post != null) {
+                //TODO Send like here.
+            }
+        } else if (v.getId() == R.id.post_top_view) {
+            // On post click
+            if (post != null) {
+                startActivity(PostActivity.getActivityIntent(this, post.getId()));
+            }
         }
     }
 }

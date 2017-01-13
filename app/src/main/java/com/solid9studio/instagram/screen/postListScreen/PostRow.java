@@ -12,9 +12,10 @@ import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.Row;
 import com.solid9studio.instagram.model.InstaPost;
 import com.solid9studio.instagram.screen.postScreen.PostActivity;
-import com.solid9studio.instagram.screen.postScreen.PostContentRow;
 import com.solid9studio.instagram.view.SquareImageView;
 import com.squareup.picasso.Picasso;
+
+import java.text.SimpleDateFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,6 +26,7 @@ import butterknife.ButterKnife;
 
 public class PostRow extends Row {
 
+    public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm");
     private InstaPost post;
 
     public PostRow(long id, InstaPost post) {
@@ -41,12 +43,25 @@ public class PostRow extends Row {
     public void bindView(RecyclerView.ViewHolder holder) {
         ViewHolder h = (ViewHolder) holder;
         h.topView.setTag(post);
+        h.likeContainer.setTag(post);
 
         h.text.setText(post.getPostSummary());
         h.author.setText(post.getInstagramProfile().getName());
-        h.creationDate.setText(PostContentRow.SDF.format(post.getCreatedAt()));
+        h.creationDate.setText(SDF.format(post.getCreatedAt()));
         Picasso.with(h.topView.getContext()).load(post.getPostImage().getLink()).into(h.image);
         Picasso.with(h.topView.getContext()).load(post.getInstagramProfile().getAvatar().getLink()).into(h.userAvatarImage);
+        setLikes(h, post.getLikeCount(), post.isLikedByMe());
+    }
+
+    private void setLikes(ViewHolder h, int likeCount, boolean isLikedByMe) {
+
+        if (isLikedByMe) {
+            h.likeIcon.setImageResource(R.drawable.heart);
+        } else {
+            h.likeIcon.setImageResource(R.drawable.heart_gray);
+        }
+
+        h.likeText.setText(String.valueOf(likeCount) + " likes");
     }
 
     // ==================== ViewHolder ==================== //
@@ -67,21 +82,31 @@ public class PostRow extends Row {
         @BindView(R.id.post_user_avatar)
         ImageView userAvatarImage;
 
+        @BindView(R.id.like_container)
+        View likeContainer;
+
+        @BindView(R.id.like_icon)
+        ImageView likeIcon;
+
+        @BindView(R.id.like_text)
+        TextView likeText;
+
         View topView;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
             topView = itemView;
             topView.setOnClickListener(this);
-            ButterKnife.bind(this, itemView);
+            likeContainer.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             Context context = v.getContext();
-            InstaPost post = (InstaPost)v.getTag();
-            if (post != null) {
-                context.startActivity(PostActivity.getActivityIntent(context, post.getId()));
+            if (context instanceof View.OnClickListener) {
+                // Forward onClick to activity.
+                ((View.OnClickListener)context).onClick(v);
             }
         }
     }

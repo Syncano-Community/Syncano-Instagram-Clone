@@ -32,7 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class PostActivity extends BaseActivity {
+public class PostActivity extends BaseActivity implements View.OnClickListener {
 
     public static final String EXTRA_POST_ID = "EXTRA_POST_ID";
     public static final String FIELD_POST_OWNER_ID = "post_id";
@@ -195,6 +195,18 @@ public class PostActivity extends BaseActivity {
         protected void onPostExecute(List<InstaComment>  result) {
 
             displayComments(result);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        InstaPost post = (InstaPost)v.getTag();
+
+        if (v.getId() == R.id.like_container) {
+            // On like button click
+            if (post != null) {
+                //TODO Send like here.
+            }
         }
     }
 }

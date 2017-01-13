@@ -3,9 +3,10 @@
     <color name="colorPrimary">#5180a6</color>
     <color name="colorPrimaryDark">#012940</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="author_name">#414141</color>
+    <color name="author_name">@color/colorPrimaryDark</color>
     <color name="light_gray">#ededed</color>
     <color name="gray">#d9d9d9</color>
+    <color name="post_text">@color/colorPrimaryDark</color>
     <color name="comment_background">@color/light_gray</color>
     <color name="comment_separator">@color/gray</color>
     <color name="new_post_activity_background">#eceeed</color>

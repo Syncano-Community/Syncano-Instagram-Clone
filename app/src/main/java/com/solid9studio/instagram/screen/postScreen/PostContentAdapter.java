@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import com.solid9studio.instagram.model.InstaComment;
 import com.solid9studio.instagram.Row;
 import com.solid9studio.instagram.model.InstaPost;
+import com.solid9studio.instagram.screen.postListScreen.PostRow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class PostContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case TYPE_POST:
-                return PostContentRow.makeViewHolder(parent);
+                return PostRow.makeViewHolder(parent);
             case TYPE_COMMENT:
                 return CommentRow.makeViewHolder(parent);
         }
@@ -37,7 +38,7 @@ public class PostContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public int getItemViewType(int position) {
         Row r = rows.get(position);
-        if (r instanceof PostContentRow) {
+        if (r instanceof PostRow) {
             return TYPE_POST;
         } else if (r instanceof CommentRow) {
             return TYPE_COMMENT;
@@ -72,7 +73,7 @@ public class PostContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         ArrayList<Row> newRows = new ArrayList<>();
 
         if (post != null) {
-            newRows.add(new PostContentRow(0, post)); // Header
+            newRows.add(new PostRow(0, post)); // Header
 
             for (InstaComment comment : comments) {
                 newRows.add(new CommentRow(comment.getId(), comment));
