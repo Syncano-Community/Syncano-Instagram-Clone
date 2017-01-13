@@ -9,4 +9,5 @@
     <dimen name="space_normal">6dp</dimen>
     <dimen name="space_large">16dp</dimen>
     <dimen name="space_huge">22dp</dimen>
+    <dimen name="like_icon_size">16dp</dimen>
 </resources>
