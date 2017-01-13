@@ -13,4 +13,5 @@
     <color name="new_post_background">#ffffff</color>
     <color name="image_background">#eceeed</color>
     <color name="new_post_separator">@color/gray</color>
+    <color name="syncano_color">#0070d3</color>
 </resources>

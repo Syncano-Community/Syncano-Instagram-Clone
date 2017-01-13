@@ -17,4 +17,14 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/space_large"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:text="Powered by\nSYNCANO"
+        android:textColor="@color/syncano_color"/>
+
 </RelativeLayout>
