@@ -211,6 +211,21 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
         JsonObject params = new JsonObject();
         params.addProperty("target", token);
 
+        Instagram instagram = (Instagram) this.getApplication();
+        post.getLikeCount().add((double)instagram.getUser().getId());
+
+        post.save(new SyncanoCallback<SyncanoObject>() {
+            @Override
+            public void success(Response<SyncanoObject> response, SyncanoObject result) {
+                
+            }
+
+            @Override
+            public void failure(Response<SyncanoObject> response) {
+
+            }
+        });
+
         ((Instagram) this.getApplication()).getSyncanoInstance().runScript(1, params).sendAsync(new SyncanoCallback<Trace>() {
             @Override
             public void success(Response<Trace> response, Trace result) {
