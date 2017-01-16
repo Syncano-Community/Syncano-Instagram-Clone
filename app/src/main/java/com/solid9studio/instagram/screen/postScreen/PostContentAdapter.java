@@ -1,5 +1,6 @@
 package com.solid9studio.instagram.screen.postScreen;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
@@ -23,6 +24,12 @@ public class PostContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private InstagramPost post = null;
     private ArrayList<InstagramComment> comments = new ArrayList<>();
     private ArrayList<Row> rows = new ArrayList<>();
+    private Context context;
+
+    public PostContentAdapter(Context context)
+    {
+        this.context = context;
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -73,7 +80,7 @@ public class PostContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         ArrayList<Row> newRows = new ArrayList<>();
 
         if (post != null) {
-            newRows.add(new PostRow(0, post)); // Header
+            newRows.add(new PostRow(0, post, context)); // Header
 
             for (InstagramComment comment : comments) {
                 newRows.add(new CommentRow(comment.getId(), comment));

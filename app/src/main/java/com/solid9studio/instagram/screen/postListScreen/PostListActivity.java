@@ -14,8 +14,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.google.gson.JsonObject;
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.application.Instagram;
@@ -29,13 +30,10 @@ import com.solid9studio.instagram.screen.settingsScreen.SettingsActivity;
 import com.solid9studio.instagram.user.InstagramUser;
 import com.solid9studio.instagram.utilities.Utilities;
 import com.syncano.library.Syncano;
-import com.syncano.library.api.Response;
 import com.syncano.library.api.ResponseGetList;
-import com.syncano.library.callbacks.SyncanoCallback;
 import com.syncano.library.callbacks.SyncanoListCallback;
 import com.syncano.library.choice.SortOrder;
 import com.syncano.library.data.SyncanoObject;
-import com.syncano.library.data.Trace;
 import com.syncano.library.simple.RequestBuilder;
 
 import java.util.List;
@@ -46,7 +44,6 @@ import butterknife.OnClick;
 
 public class PostListActivity extends BaseActivity implements View.OnClickListener {
 
-    private static final String FIELD_TARGET = "target";
     private static final String EXTRA_USER_FILTER = "user_id";
 
     @BindView(R.id.toolbar)
@@ -61,7 +58,7 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
     @BindView(R.id.post_list)
     RecyclerView recyclerView;
 
-    private PostListAdapter adapter = new PostListAdapter();
+    private PostListAdapter adapter = new PostListAdapter(this);
     private Syncano syncano;
     private int userIdFilter; // Used to list only this user posts.
 
@@ -194,7 +191,6 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
      */
     private class FetchPostProfiles extends AsyncTask<List<InstagramPost> , Void, List<InstagramPost>>
     {
-
         @Override
         protected List<InstagramPost> doInBackground(List<InstagramPost> ...params) {
 
@@ -218,11 +214,15 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         InstagramPost post = (InstagramPost)v.getTag();
+        Instagram instagram = (Instagram) this.getApplication();
 
         if (v.getId() == R.id.like_container) {
-            // On like button click
-            if (post != null && post.isLikedByMe() == false) {
-                notifyCommentedPost(post.getInstagramProfile().getPushUrl());
+            if (post != null && post.isLikedByMe(instagram.getUser().getProfile().getId()) == false) {
+
+                Utilities.notifyLikedPost(this, post
+                        ,instagram.getUser().getProfile().getId()
+                        ,(ImageView) v.findViewById(R.id.like_icon)
+                        ,(TextView) v.findViewById(R.id.like_text));
             }
         } else if (v.getId() == R.id.post_top_view) {
             // On post click
@@ -230,22 +230,5 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
                 startActivity(PostActivity.getActivityIntent(this, post.getId()));
             }
         }
-    }
-
-    private void notifyCommentedPost(String token) {
-        JsonObject params = new JsonObject();
-        params.addProperty(PostListActivity.FIELD_TARGET, token);
-
-        ((Instagram) this.getApplication()).getSyncanoInstance().runScript(Constants.NOTIFY_USER_SCRIPT_ID, params).sendAsync(new SyncanoCallback<Trace>() {
-            @Override
-            public void success(Response<Trace> response, Trace result) {
-
-            }
-
-            @Override
-            public void failure(Response<Trace> response) {
-                Utilities.showToast(getApplicationContext(), response.getError());
-            }
-        });
     }
 }

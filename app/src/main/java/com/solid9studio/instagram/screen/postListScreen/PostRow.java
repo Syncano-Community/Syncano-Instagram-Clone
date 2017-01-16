@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.Row;
+import com.solid9studio.instagram.application.Instagram;
 import com.solid9studio.instagram.model.InstagramPost;
 import com.solid9studio.instagram.view.SquareImageView;
 import com.squareup.picasso.Picasso;
@@ -27,10 +28,12 @@ public class PostRow extends Row {
 
     public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm");
     private InstagramPost post;
+    private Context context;
 
-    public PostRow(long id, InstagramPost post) {
+    public PostRow(long id, InstagramPost post, Context context) {
         super(id);
         this.post = post;
+        this.context = context;
     }
 
     public static RecyclerView.ViewHolder makeViewHolder(ViewGroup parent) {
@@ -43,6 +46,7 @@ public class PostRow extends Row {
         ViewHolder h = (ViewHolder) holder;
         h.topView.setTag(post);
         h.likeContainer.setTag(post);
+        Instagram instagram = (Instagram) context.getApplicationContext();
 
         h.text.setText(post.getPostSummary());
         h.author.setText(post.getInstagramProfile().getName());
@@ -57,7 +61,7 @@ public class PostRow extends Row {
             likesCount = post.getLikeCountList().size();
         }
 
-        setLikes(h, likesCount, post.isLikedByMe());
+        setLikes(h, likesCount, post.isLikedByMe(instagram.getUser().getProfile().getId()));
     }
 
     private void setLikes(ViewHolder h, int likeCount, boolean isLikedByMe) {

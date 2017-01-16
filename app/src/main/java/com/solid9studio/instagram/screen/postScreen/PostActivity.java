@@ -10,7 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.gson.JsonObject;
 import com.solid9studio.instagram.BaseActivity;
@@ -56,7 +58,7 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
     private int postId;
     private InstagramPost post;
 
-    private PostContentAdapter adapter = new PostContentAdapter();
+    private PostContentAdapter adapter = new PostContentAdapter(this);
 
     public static Intent getActivityIntent(Context context, int postId) {
         Intent intent = new Intent(context, PostActivity.class);
@@ -164,7 +166,7 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
                 @Override
                 public void success(Response<SyncanoObject> response, SyncanoObject result) {
                     downloadComments(postId);
-                    notifyCommentedPost(post.getInstagramProfile().getPushUrl());
+                   // notifyCommentedPost(post.getInstagramProfile().getPushUrl());
                 }
 
                 @Override
@@ -199,44 +201,17 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        InstagramPost post = (InstagramPost) v.getTag();
+        InstagramPost post = (InstagramPost)v.getTag();
+        Instagram instagram = (Instagram) this.getApplication();
 
         if (v.getId() == R.id.like_container) {
-            if (post != null && post.isLikedByMe() == false) {
-                notifyCommentedPost(post.getInstagramProfile().getPushUrl());
+            if (post != null && post.isLikedByMe(instagram.getUser().getProfile().getId()) == false) {
+
+                Utilities.notifyLikedPost(this, post
+                        ,instagram.getUser().getProfile().getId()
+                        ,(ImageView) v.findViewById(R.id.like_icon)
+                        ,(TextView) v.findViewById(R.id.like_text));
             }
         }
-    }
-
-    private void notifyCommentedPost(String token) {
-        JsonObject params = new JsonObject();
-        params.addProperty("target", token);
-
-        Instagram instagram = (Instagram) this.getApplication();
-        post.getLikeCountList().add((double)instagram.getUser().getId());
-
-        post.save(new SyncanoCallback<SyncanoObject>() {
-            @Override
-            public void success(Response<SyncanoObject> response, SyncanoObject result) {
-                
-            }
-
-            @Override
-            public void failure(Response<SyncanoObject> response) {
-                Utilities.showToast(getApplicationContext(), response.getError());
-            }
-        });
-
-        ((Instagram) this.getApplication()).getSyncanoInstance().runScript(1, params).sendAsync(new SyncanoCallback<Trace>() {
-            @Override
-            public void success(Response<Trace> response, Trace result) {
-
-            }
-
-            @Override
-            public void failure(Response<Trace> response) {
-                Utilities.showToast(getApplicationContext(), response.getError());
-            }
-        });
     }
 }

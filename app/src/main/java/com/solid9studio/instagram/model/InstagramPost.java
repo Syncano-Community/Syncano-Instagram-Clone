@@ -66,16 +66,15 @@ public class InstagramPost extends SyncanoObject {
         this.likeCountList = likeCountList;
     }
 
-    public boolean isLikedByMe()
+    public boolean isLikedByMe(int myId)
     {
         if(getLikeCountList() != null)
         {
             for(int i = 0; i < getLikeCountList().size(); i++)
             {
                 int toCompare = getLikeCountList().get(i).intValue();
-                int id = getInstagramProfile().getId();
 
-                if(id == toCompare)
+                if(myId == toCompare)
                 {
                     return true;
                 }
