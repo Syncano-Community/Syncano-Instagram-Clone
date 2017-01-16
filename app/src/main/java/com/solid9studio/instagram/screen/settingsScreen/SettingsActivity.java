@@ -74,7 +74,9 @@ public class SettingsActivity extends BaseActivity {
     public void signOut() {
         ((Instagram) this.getApplication()).getSyncanoInstance().setUser(null);
         Intent intent = new Intent(this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+
+        this.finish();
     }
 }
