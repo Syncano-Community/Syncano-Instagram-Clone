@@ -25,16 +25,16 @@ public class SplashActivity extends BaseActivity {
         setContentView(R.layout.activity_splash);
         final Instagram instagram = (Instagram) this.getApplication();
 
-        if (!checkPlayServices()) {
-            Utilities.showToast(getApplicationContext(), "Your device does not have Google Play Services Installed! It can't receive PUSH notifications!!");
-        }
-
         // Delay so splash will be visible.
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run()
             {
+                if (!checkPlayServices()) {
+                    Utilities.showToast(getApplicationContext(), "Your device does not have Google Play Services Installed! It can't receive PUSH notifications!!");
+                }
+
                 if (isLoggedIn(instagram)) {
                     startActivity(PostListActivity.getActivityIntent(SplashActivity.this));
                 } else {

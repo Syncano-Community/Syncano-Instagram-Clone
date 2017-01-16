@@ -17,6 +17,7 @@ import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.application.Instagram;
 import com.solid9studio.instagram.model.InstagramPost;
+import com.solid9studio.instagram.screen.postListScreen.PostListActivity;
 import com.solid9studio.instagram.user.InstagramProfile;
 import com.solid9studio.instagram.utilities.Utilities;
 
@@ -99,6 +100,9 @@ public class CreatePostActivity extends BaseActivity {
         avatarFile = null;
         progressBarSharePost.setVisibility(View.INVISIBLE);
         Utilities.showToast(getApplicationContext(), "Post added!");
+
+        Intent intent = new Intent(this, PostListActivity.class);
+        startActivity(intent);
     }
 
     public class SharePicture extends AsyncTask<String, Void, Void> {

@@ -128,12 +128,7 @@ public class Utilities {
 
     public static void notifyLikedPost(final Context context, final InstagramPost post, final int userID, ImageView likeImageView, TextView likeText)
     {
-        if(checkIfCanPushMessage(context) == false)
-        {
-            return;
-        }
-
-        JsonObject params = new JsonObject();
+        final JsonObject params = new JsonObject();
         params.addProperty(FIELD_PUSH_TARGET, post.getInstagramProfile().getPushUrl());
         params.addProperty(FIELD_PUSH_MESSAGE, "You've got new like!");
 
@@ -146,28 +141,34 @@ public class Utilities {
         likeImageView.setImageResource(R.drawable.heart);
         likeText.setText(String.valueOf(post.getLikeCountList().size()) + " likes");
 
-        ((Instagram) context.getApplicationContext()).getSyncanoInstance().runScript(Constants.NOTIFY_USER_SCRIPT_ID, params).sendAsync(new SyncanoCallback<Trace>() {
+        post.save(new SyncanoCallback<SyncanoObject>() {
             @Override
-            public void success(Response<Trace> response, Trace result) {
+            public void success(Response<SyncanoObject> response, SyncanoObject result) {
 
-                post.save(new SyncanoCallback<SyncanoObject>() {
-                    @Override
-                    public void success(Response<SyncanoObject> response, SyncanoObject result) {
+                if(checkIfCanPushMessage(context) == false) {
+                    ((Instagram) context.getApplicationContext()).getSyncanoInstance().runScript(Constants.NOTIFY_USER_SCRIPT_ID, params).sendAsync(new SyncanoCallback<Trace>() {
+                        @Override
+                        public void success(Response<Trace> response, Trace result) {
 
-                    }
 
-                    @Override
-                    public void failure(Response<SyncanoObject> response) {
-                        Utilities.showToast(context, response.getError());
-                    }
-                });
+                        }
+
+                        @Override
+                        public void failure(Response<Trace> response) {
+                            Utilities.showToast(context, response.getError());
+                        }
+                    });
+                }
             }
 
             @Override
-            public void failure(Response<Trace> response) {
+            public void failure(Response<SyncanoObject> response) {
                 Utilities.showToast(context, response.getError());
             }
         });
+
+
+
     }
 
     public static void notifyCommentedPost(final Context context, final InstagramPost post, final int userID) {
