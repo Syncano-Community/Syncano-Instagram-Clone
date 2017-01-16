@@ -206,7 +206,6 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
 
         @Override
         protected void onPostExecute(List<InstagramPost> result) {
-
             displayPosts(result);
         }
     }
@@ -217,7 +216,7 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
         Instagram instagram = (Instagram) this.getApplication();
 
         if (v.getId() == R.id.like_container) {
-            if (post != null && post.isLikedByMe(instagram.getUser().getProfile().getId()) == false) {
+            if (post != null && !post.isLikedByMe(instagram.getUser().getProfile().getId())) {
 
                 Utilities.notifyLikedPost(this, post
                         ,instagram.getUser().getProfile().getId()

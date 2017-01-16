@@ -18,7 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
@@ -28,6 +30,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.solid9studio.instagram.BaseActivity;
@@ -81,6 +84,9 @@ public class LoginActivity extends BaseActivity {
     @BindView(R.id.social_login_button)
     LoginButton mLoginButton;
 
+    @BindView(R.id.email_sign_in_button)
+    Button mLoginButtonEmail;
+
     private InstagramUser user;
     private CallbackManager callbackManager;
 
@@ -96,6 +102,7 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         callbackManager = CallbackManager.Factory.create();
+        LoginManager.getInstance().logOut();
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -148,6 +155,8 @@ public class LoginActivity extends BaseActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
+
+        onLoggingIn();
 
         // Reset errors.
         mEmailView.setError(null);
@@ -208,6 +217,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void attemptLoginSocial(String accessToken, final String email, final String name, final String surname, final byte[] byteArray) {
+
         user.setUserName(email);
 
         user = new InstagramUser(SocialAuthBackend.FACEBOOK, accessToken);
@@ -220,7 +230,6 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void success(Response<AbstractUser> response, AbstractUser result) {
                 user = (InstagramUser) response.getData();
-
 
                 user.getProfile().setName(name);
                 user.getProfile().setSurname(surname);
@@ -317,6 +326,7 @@ public class LoginActivity extends BaseActivity {
         @Override
         public void onSuccess(LoginResult loginResult) {
             final AccessToken accessToken = loginResult.getAccessToken();
+            onLoggingIn();
 
             // Facebook Email address
             GraphRequest request = GraphRequest.newMeRequest(
@@ -382,5 +392,17 @@ public class LoginActivity extends BaseActivity {
 
             return null;
         }
+    }
+
+    public void onLoggingIn()
+    {
+        mLoginButton.setEnabled(false);
+        mLoginButtonEmail.setEnabled(false);
+        mProgressView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
     }
 }
