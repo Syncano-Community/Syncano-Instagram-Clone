@@ -37,7 +37,8 @@ import java.util.ArrayList;
 
 public class Utilities {
 
-    private static final String FIELD_TARGET = "target";
+    private static final String FIELD_PUSH_TARGET = "target";
+    private static final String FIELD_PUSH_MESSAGE = "message";
     public static final int SELECT_PICTURE = 1;
 
     public static void setSelectPictureListener(final Activity context, View view)
@@ -127,7 +128,8 @@ public class Utilities {
     public static void notifyLikedPost(final Context context, final InstagramPost post, final int userID, ImageView likeImageView, TextView likeText)
     {
         JsonObject params = new JsonObject();
-        params.addProperty(FIELD_TARGET, post.getInstagramProfile().getPushUrl());
+        params.addProperty(FIELD_PUSH_TARGET, post.getInstagramProfile().getPushUrl());
+        params.addProperty(FIELD_PUSH_MESSAGE, "You've got new like!");
 
         if(post.getLikeCountList() == null)
         {
@@ -165,7 +167,8 @@ public class Utilities {
     public static void notifyCommentedPost(final Context context, final InstagramPost post, final int userID) {
 
         JsonObject params = new JsonObject();
-        params.addProperty(FIELD_TARGET, post.getInstagramProfile().getPushUrl());
+        params.addProperty(FIELD_PUSH_TARGET, post.getInstagramProfile().getPushUrl());
+        params.addProperty(FIELD_PUSH_MESSAGE, "You've got new comment!");
 
         ((Instagram) context.getApplicationContext()).getSyncanoInstance().runScript(Constants.NOTIFY_USER_SCRIPT_ID, params).sendAsync(new SyncanoCallback<Trace>() {
             @Override

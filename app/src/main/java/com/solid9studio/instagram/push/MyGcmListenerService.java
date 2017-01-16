@@ -8,7 +8,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 import com.solid9studio.instagram.R;
@@ -30,18 +29,8 @@ public class MyGcmListenerService extends GcmListenerService {
      */
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        StringBuilder sb = new StringBuilder();
-        for (String key : data.keySet()) {
-            sb.append(key);
-            sb.append(':');
-            sb.append(data.get(key).toString());
-            sb.append(' ');
-        }
-        String receivedData = sb.toString();
-        Log.d(TAG, "From: " + from);
-        Log.d(TAG, "Message: " + receivedData);
 
-        showNotification(receivedData);
+        showNotification(data.get("message").toString());
     }
 
     /**
