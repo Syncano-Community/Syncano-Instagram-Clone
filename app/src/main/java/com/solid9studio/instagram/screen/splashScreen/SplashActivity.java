@@ -1,6 +1,7 @@
 package com.solid9studio.instagram.screen.splashScreen;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -22,17 +23,25 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        Instagram instagram = (Instagram) this.getApplication();
+        final Instagram instagram = (Instagram) this.getApplication();
 
         if (!checkPlayServices()) {
             Utilities.showToast(getApplicationContext(), "Your device does not have Google Play Services Installed! It can't receive PUSH notifications!!");
         }
 
-        if (isLoggedIn(instagram)) {
-            startActivity(PostListActivity.getActivityIntent(this));
-        } else {
-            startActivity(LoginActivity.getActivityIntent(this));
-        }
+        // Delay so splash will be visible.
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run()
+            {
+                if (isLoggedIn(instagram)) {
+                    startActivity(PostListActivity.getActivityIntent(SplashActivity.this));
+                } else {
+                    startActivity(LoginActivity.getActivityIntent(SplashActivity.this));
+                }
+            }
+        }, 2000);
     }
 
     private boolean isLoggedIn(Instagram instagram) {
