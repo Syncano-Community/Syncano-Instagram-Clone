@@ -150,9 +150,9 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
     @OnClick(R.id.submit_comment)
     public void commentButtonOnClickListener() {
         if (validateComment()) {
+            final Instagram instagram = (Instagram) this.getApplication();
             InstagramComment instaComment = new InstagramComment();
-            InstagramPost instaPost = new InstagramPost();
-            instaPost.setId(postId);
+            final Context context = this;
 
             Syncano syncano = ((Instagram) this.getApplication()).getSyncanoInstance();
             InstagramProfile instagramProfile = (InstagramProfile) syncano.getUser().getProfile();
@@ -166,7 +166,7 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
                 @Override
                 public void success(Response<SyncanoObject> response, SyncanoObject result) {
                     downloadComments(postId);
-                   // notifyCommentedPost(post.getInstagramProfile().getPushUrl());
+                    Utilities.notifyCommentedPost(context, post, instagram.getUser().getProfile().getId().intValue());
                 }
 
                 @Override

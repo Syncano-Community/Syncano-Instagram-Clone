@@ -161,4 +161,24 @@ public class Utilities {
             }
         });
     }
+
+    public static void notifyCommentedPost(final Context context, final InstagramPost post, final int userID) {
+
+        JsonObject params = new JsonObject();
+        params.addProperty(FIELD_TARGET, post.getInstagramProfile().getPushUrl());
+
+        ((Instagram) context.getApplicationContext()).getSyncanoInstance().runScript(Constants.NOTIFY_USER_SCRIPT_ID, params).sendAsync(new SyncanoCallback<Trace>() {
+            @Override
+            public void success(Response<Trace> response, Trace result) {
+
+            }
+
+            @Override
+            public void failure(Response<Trace> response) {
+                Utilities.showToast(context, response.getError());
+            }
+        });
+
+
+    }
 }
