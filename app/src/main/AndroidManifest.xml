@@ -40,6 +40,7 @@
         <activity android:name=".screen.createPostScreen.CreatePostActivity"
             android:label="@string/title_activity_create_post"/>
         <activity android:name=".screen.settingsScreen.SettingsActivity"
+            android:noHistory="true"
             android:label="@string/title_activity_settings"/>
         <activity android:name=".screen.profileScreen.ProfileActivity"
             android:label="@string/title_activity_profile"></activity>
