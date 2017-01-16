@@ -2,8 +2,6 @@ package com.solid9studio.instagram.screen.profileScreen;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +14,8 @@ import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.application.Instagram;
 import com.solid9studio.instagram.user.InstagramUser;
 import com.solid9studio.instagram.utilities.Utilities;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 import com.syncano.library.Syncano;
 import com.syncano.library.api.Response;
 import com.syncano.library.callbacks.SyncanoCallback;
@@ -77,12 +77,21 @@ public class ProfileActivity extends BaseActivity {
         mSurnameView.setText(user.getProfile().getSurname());
         mEmailVIew.setText(user.getUserName());
 
-        if(user.getProfile().getAvatar() != null && user.getProfile().getAvatar().getData() != null)
+        String avatarLink = user.getProfile().getAvatar().getLink();
+
+        if(avatarLink != null && avatarLink.isEmpty() == false)
         {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inMutable = true;
-            Bitmap bmp = BitmapFactory.decodeByteArray( user.getProfile().getAvatar().getData(), 0,  user.getProfile().getAvatar().getData().length, options);
-            mAvatarView.setImageBitmap(bmp);
+            Picasso.with(this).load(avatarLink).into(mAvatarView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    mProgressView.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onError() {
+                    mProgressView.setVisibility(View.GONE);
+                }
+            });
         }
     }
 

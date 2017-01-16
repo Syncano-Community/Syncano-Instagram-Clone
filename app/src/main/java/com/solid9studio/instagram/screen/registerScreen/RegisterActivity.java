@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
@@ -147,22 +148,7 @@ public class RegisterActivity extends BaseActivity {
             // perform the user login attempt.
             showProgress(true);
 
-            InstagramUser newUser = new InstagramUser(email, password, name, surname, new SyncanoFile(avatarFile));
-
-            newUser.register(new SyncanoCallback<AbstractUser>() {
-                @Override
-                public void success(Response<AbstractUser> response, AbstractUser result) {
-
-                    showProgress(false);
-                    goToPostList();
-                }
-
-                @Override
-                public void failure(Response<AbstractUser> response) {
-                    Utilities.showToast(getApplicationContext(), response.getError());
-                    showProgress(false);
-                }
-            });
+            new RegisterUserTask().execute(email, password, name, surname);
         }
     }
 
@@ -216,6 +202,53 @@ public class RegisterActivity extends BaseActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         avatarFile = Utilities.onSelectedPicutreFromGallery(this, requestCode, resultCode, data, mUserAvatar);
+    }
+
+    public class RegisterUserTask extends AsyncTask<String, Void, Void> {
+
+        private InstagramUser newUser;
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+            newUser = new InstagramUser();
+            newUser.setUserName(params[0]);
+            newUser.setPassword(params[1]);
+
+            Response<InstagramUser> responseRegister = newUser.register();
+
+            if(responseRegister.isSuccess())
+            {
+                newUser.getProfile().setName(params[2]);
+                newUser.getProfile().setSurname(params[3]);
+                newUser.getProfile().setAvatar(new SyncanoFile(avatarFile));
+
+                Response<InstagramProfile> responseSaveProfile = newUser.getProfile().save();
+
+                if(responseSaveProfile.isSuccess()) {
+
+                    goToPostList();
+                }
+
+                else
+                {
+                    Utilities.showToast(getApplicationContext(), responseRegister.getError());
+                }
+            }
+
+            else {
+                Utilities.showToast(getApplicationContext(), responseRegister.getError());
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+            showProgress(false);
+            super.onPostExecute(aVoid);
+        }
     }
 }
 
