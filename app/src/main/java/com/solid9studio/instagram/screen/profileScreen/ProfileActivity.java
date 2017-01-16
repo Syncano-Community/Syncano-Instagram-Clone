@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.application.Instagram;
+import com.solid9studio.instagram.user.InstagramProfile;
 import com.solid9studio.instagram.user.InstagramUser;
 import com.solid9studio.instagram.utilities.Utilities;
 import com.squareup.picasso.Callback;
@@ -77,21 +78,26 @@ public class ProfileActivity extends BaseActivity {
         mSurnameView.setText(user.getProfile().getSurname());
         mEmailVIew.setText(user.getUserName());
 
-        String avatarLink = user.getProfile().getAvatar().getLink();
-
-        if(avatarLink != null && avatarLink.isEmpty() == false)
+        if(user.getProfile().getAvatar() != null)
         {
-            Picasso.with(this).load(avatarLink).into(mAvatarView, new Callback() {
-                @Override
-                public void onSuccess() {
-                    mProgressView.setVisibility(View.GONE);
-                }
+            String avatarLink = user.getProfile().getAvatar().getLink();
 
-                @Override
-                public void onError() {
-                    mProgressView.setVisibility(View.GONE);
-                }
-            });
+            if(avatarLink != null && avatarLink.isEmpty() == false)
+            {
+                mProgressView.setVisibility(View.VISIBLE);
+
+                Picasso.with(this).load(avatarLink).into(mAvatarView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        mProgressView.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError() {
+                        mProgressView.setVisibility(View.GONE);
+                    }
+                });
+            }
         }
     }
 
@@ -105,6 +111,7 @@ public class ProfileActivity extends BaseActivity {
         user.getProfile().save(new SyncanoCallback<SyncanoObject>() {
             @Override
             public void success(Response<SyncanoObject> response, SyncanoObject result) {
+                user.setProfile((InstagramProfile)result);
                 syncano.setUser(user);
                 mProgressView.setVisibility(View.GONE);
             }
