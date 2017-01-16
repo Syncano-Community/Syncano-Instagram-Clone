@@ -20,12 +20,13 @@ import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.application.Instagram;
 import com.solid9studio.instagram.constant.Constants;
-import com.solid9studio.instagram.model.InstaPost;
+import com.solid9studio.instagram.model.InstagramPost;
 import com.solid9studio.instagram.push.GetApplicationTokenTask;
 import com.solid9studio.instagram.screen.createPostScreen.CreatePostActivity;
 import com.solid9studio.instagram.screen.postScreen.PostActivity;
 import com.solid9studio.instagram.screen.profileScreen.ProfileActivity;
 import com.solid9studio.instagram.screen.settingsScreen.SettingsActivity;
+import com.solid9studio.instagram.utilities.Utilities;
 import com.syncano.library.Syncano;
 import com.syncano.library.api.Response;
 import com.syncano.library.api.ResponseGetList;
@@ -42,6 +43,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class PostListActivity extends BaseActivity implements View.OnClickListener {
+
+    private static final String FIELD_TARGET = "target";
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -116,17 +119,27 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
 
     private void downloadPosts() {
 
-        Syncano.please(InstaPost.class).orderBy(SyncanoObject.FIELD_CREATED_AT, SortOrder.DESCENDING).get(new SyncanoListCallback<InstaPost>() {
+        Syncano.please(InstagramPost.class).orderBy(SyncanoObject.FIELD_CREATED_AT, SortOrder.DESCENDING).get(new SyncanoListCallback<InstagramPost>() {
               @Override
-              public void success(ResponseGetList<InstaPost> response, List<InstaPost> result) {
+              public void success(ResponseGetList<InstagramPost> response, List<InstagramPost> result) {
 
-                  new FetchPostsUsers().execute(result);
+                  new FetchPostProfiles().execute(result);
               }
 
               @Override
-              public void failure(ResponseGetList<InstaPost> response) {
+              public void failure(ResponseGetList<InstagramPost> response) {
+                  Utilities.showToast(getApplicationContext(), response.getError());
             }
           });
+    }
+
+    @Override
+    public void onRestart() {
+
+        downloadPosts();
+        super.onRestart();
+        //When BACK BUTTON is pressed, the activity on the stack is restarted
+        //Do what you want on the refresh procedure here
     }
 
     public void goToSettings() {
@@ -137,19 +150,22 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
         startActivity(ProfileActivity.getActivityIntent(this));
     }
 
-    private void displayPosts(List<InstaPost> posts) {
+    private void displayPosts(List<InstagramPost> posts) {
         swipeRefreshLayout.setRefreshing(false);
         adapter.setData(posts);
         adapter.notifyDataSetChanged();
     }
 
-    private class FetchPostsUsers extends AsyncTask<List<InstaPost> , Void, List<InstaPost>>
+    /**
+     * This Async Task is responsible for getting user info for every post.
+     */
+    private class FetchPostProfiles extends AsyncTask<List<InstagramPost> , Void, List<InstagramPost>>
     {
 
         @Override
-        protected List<InstaPost> doInBackground(List<InstaPost> ...params) {
+        protected List<InstagramPost> doInBackground(List<InstagramPost> ...params) {
 
-            List<InstaPost> result = params[0];
+            List<InstagramPost> result = params[0];
 
             for(int i = 0; i <result.size(); i++)
             {
@@ -160,7 +176,7 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
         }
 
         @Override
-        protected void onPostExecute(List<InstaPost> result) {
+        protected void onPostExecute(List<InstagramPost> result) {
 
             displayPosts(result);
         }
@@ -168,7 +184,7 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        InstaPost post = (InstaPost)v.getTag();
+        InstagramPost post = (InstagramPost)v.getTag();
 
         if (v.getId() == R.id.like_container) {
             // On like button click
@@ -185,9 +201,9 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
 
     private void notifyCommentedPost(String token) {
         JsonObject params = new JsonObject();
-        params.addProperty("target", token);
+        params.addProperty(PostListActivity.FIELD_TARGET, token);
 
-        ((Instagram) this.getApplication()).getSyncanoInstance().runScript(1, params).sendAsync(new SyncanoCallback<Trace>() {
+        ((Instagram) this.getApplication()).getSyncanoInstance().runScript(Constants.NOTIFY_USER_SCRIPT_ID, params).sendAsync(new SyncanoCallback<Trace>() {
             @Override
             public void success(Response<Trace> response, Trace result) {
 
@@ -195,7 +211,7 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
 
             @Override
             public void failure(Response<Trace> response) {
-
+                Utilities.showToast(getApplicationContext(), response.getError());
             }
         });
     }

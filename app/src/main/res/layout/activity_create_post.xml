@@ -43,6 +43,12 @@
             android:layout_weight="1"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:hint="Write a caption..."/>
+        <ProgressBar
+            android:id="@+id/progress_bar_share_post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="invisible"/>
 
     </LinearLayout>
 

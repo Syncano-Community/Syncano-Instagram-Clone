@@ -15,7 +15,7 @@ import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.screen.loginScreen.LoginActivity;
 
 /**
- * Created by Sebastian on 2017-01-12.
+ * Service that notifies user when his/her post is commented or liked.
  */
 
 public class MyGcmListenerService extends GcmListenerService {

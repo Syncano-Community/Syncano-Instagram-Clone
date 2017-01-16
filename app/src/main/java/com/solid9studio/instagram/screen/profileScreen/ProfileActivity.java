@@ -102,6 +102,7 @@ public class ProfileActivity extends BaseActivity {
 
             @Override
             public void failure(Response<SyncanoObject> response) {
+                Utilities.showToast(getApplicationContext(), response.getError());
                 mProgressView.setVisibility(View.GONE);
             }
         });

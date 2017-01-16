@@ -1,25 +1,22 @@
 package com.solid9studio.instagram.screen.splashScreen;
 
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.application.Instagram;
-import com.solid9studio.instagram.constant.Constants;
-import com.solid9studio.instagram.push.GetApplicationTokenTask;
 import com.solid9studio.instagram.screen.loginScreen.LoginActivity;
 import com.solid9studio.instagram.screen.postListScreen.PostListActivity;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.solid9studio.instagram.utilities.Utilities;
 
 public class SplashActivity extends BaseActivity {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = SplashActivity.class.getSimpleName();
-    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +25,7 @@ public class SplashActivity extends BaseActivity {
         Instagram instagram = (Instagram) this.getApplication();
 
         if (!checkPlayServices()) {
-            return;
+            Utilities.showToast(getApplicationContext(), "Your device does not have Google Play Services Installed! It can't receive PUSH notifications!!");
         }
 
         if (isLoggedIn(instagram)) {
@@ -45,7 +42,6 @@ public class SplashActivity extends BaseActivity {
         }
         return false;
     }
-
 
     /**
      * Check the device to make sure it has the Google Play Services APK. If

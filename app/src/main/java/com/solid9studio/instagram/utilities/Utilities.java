@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -58,6 +59,17 @@ public class Utilities {
                         parcelFileDescriptor = context.getContentResolver().openFileDescriptor(selectedImageUri, "r");
                         FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
                         Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+
+                        if(image.getWidth() >= 4128)
+                        {
+                            showToast(context, "Image width is too large and can't be displayed.");
+                        }
+
+                        else if(image.getHeight() >= 2322)
+                        {
+                            showToast(context, "Image height is too large and can't be displayed.");
+                        }
+
                         parcelFileDescriptor.close();
                         imageView.setImageBitmap(image);
 
@@ -92,5 +104,11 @@ public class Utilities {
         return uri.getPath();
     }
 
+    public static void showToast(Context ctx, String text)
+    {
+        int duration = Toast.LENGTH_LONG;
 
+        Toast toast = Toast.makeText(ctx, text, duration);
+        toast.show();
+    }
 }

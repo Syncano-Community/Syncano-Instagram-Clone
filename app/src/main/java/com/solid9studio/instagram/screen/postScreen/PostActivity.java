@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,10 +16,10 @@ import com.google.gson.JsonObject;
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.application.Instagram;
-import com.solid9studio.instagram.constant.Constants;
-import com.solid9studio.instagram.model.InstaComment;
-import com.solid9studio.instagram.model.InstaPost;
+import com.solid9studio.instagram.model.InstagramComment;
+import com.solid9studio.instagram.model.InstagramPost;
 import com.solid9studio.instagram.user.InstagramProfile;
+import com.solid9studio.instagram.utilities.Utilities;
 import com.syncano.library.Syncano;
 import com.syncano.library.api.Response;
 import com.syncano.library.callbacks.SyncanoCallback;
@@ -55,7 +54,7 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
     EditText commentEditText;
 
     private int postId;
-    private InstaPost post;
+    private InstagramPost post;
 
     private PostContentAdapter adapter = new PostContentAdapter();
 
@@ -88,12 +87,12 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
     }
 
     public void downloadPost(int postId) {
-        InstaPost instaPost = new InstaPost();
+        InstagramPost instaPost = new InstagramPost();
         instaPost.setId(postId);
 
-        instaPost.fetch(new SyncanoCallback<InstaPost>() {
+        instaPost.fetch(new SyncanoCallback<InstagramPost>() {
             @Override
-            public void success(Response<InstaPost> response, InstaPost result) {
+            public void success(Response<InstagramPost> response, InstagramPost result) {
 
                 post = result;
 
@@ -109,53 +108,55 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
 
                     @Override
                     public void failure(Response<SyncanoObject> response) {
+                        Utilities.showToast(getApplicationContext(), response.getError());
                     }
                 });
             }
 
             @Override
-            public void failure(Response<InstaPost> response) {
+            public void failure(Response<InstagramPost> response) {
+                Utilities.showToast(getApplicationContext(), response.getError());
             }
         });
     }
 
     public void downloadComments(int postId) {
 
-        Syncano.please(InstaComment.class).orderBy(SyncanoObject.FIELD_CREATED_AT, SortOrder.DESCENDING).where().in(FIELD_POST_OWNER_ID, new Integer[]{postId}).get(new SyncanoCallback<List<InstaComment>>() {
+        Syncano.please(InstagramComment.class).orderBy(SyncanoObject.FIELD_CREATED_AT, SortOrder.DESCENDING).where().in(FIELD_POST_OWNER_ID, new Integer[]{postId}).get(new SyncanoCallback<List<InstagramComment>>() {
             @Override
-            public void success(Response<List<InstaComment>> response, List<InstaComment> result) {
+            public void success(Response<List<InstagramComment>> response, List<InstagramComment> result) {
                 new FetchPostsComments().execute(result);
             }
 
             @Override
-            public void failure(Response<List<InstaComment>> response) {
-
+            public void failure(Response<List<InstagramComment>> response) {
+                Utilities.showToast(getApplicationContext(), response.getError());
             }
         });
     }
 
-    public void displayPost(InstaPost post) {
+    public void displayPost(InstagramPost post) {
         downloadProgress.setVisibility(View.GONE);
         swipeRefreshLayout.setRefreshing(false);
         adapter.setData(post, null);
     }
 
-    public void displayComments(List<InstaComment> comments) {
+    public void displayComments(List<InstagramComment> comments) {
         adapter.setData(post, comments);
     }
 
     @OnClick(R.id.submit_comment)
     public void commentButtonOnClickListener() {
         if (validateComment()) {
-            InstaComment instaComment = new InstaComment();
-            InstaPost instaPost = new InstaPost();
+            InstagramComment instaComment = new InstagramComment();
+            InstagramPost instaPost = new InstagramPost();
             instaPost.setId(postId);
 
             Syncano syncano = ((Instagram) this.getApplication()).getSyncanoInstance();
             InstagramProfile instagramProfile = (InstagramProfile) syncano.getUser().getProfile();
             instaComment.setInstagramProfile(instagramProfile);
 
-            instaComment.setInstaPost(post);
+            instaComment.setInstagramPost(post);
             instaComment.setText(commentEditText.getText().toString());
             commentEditText.setText(null);
 
@@ -168,7 +169,7 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
 
                 @Override
                 public void failure(Response<SyncanoObject> response) {
-
+                    Utilities.showToast(getApplicationContext(), response.getError());
                 }
             });
         }
@@ -178,11 +179,11 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
         return commentEditText.getText().length() >= 1;
     }
 
-    private class FetchPostsComments extends AsyncTask<List<InstaComment>, Void, List<InstaComment>> {
+    private class FetchPostsComments extends AsyncTask<List<InstagramComment>, Void, List<InstagramComment>> {
         @Override
-        protected List<InstaComment> doInBackground(List<InstaComment>... params) {
+        protected List<InstagramComment> doInBackground(List<InstagramComment>... params) {
 
-            List<InstaComment> result = params[0];
+            List<InstagramComment> result = params[0];
 
             for (int i = 0; i < result.size(); i++) {
                 result.get(i).getInstagramProfile().fetch();
@@ -191,14 +192,14 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
         }
 
         @Override
-        protected void onPostExecute(List<InstaComment> result) {
+        protected void onPostExecute(List<InstagramComment> result) {
             displayComments(result);
         }
     }
 
     @Override
     public void onClick(View v) {
-        InstaPost post = (InstaPost) v.getTag();
+        InstagramPost post = (InstagramPost) v.getTag();
 
         if (v.getId() == R.id.like_container) {
             if (post != null && post.isLikedByMe() == false) {
@@ -212,7 +213,7 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
         params.addProperty("target", token);
 
         Instagram instagram = (Instagram) this.getApplication();
-        post.getLikeCount().add((double)instagram.getUser().getId());
+        post.getLikeCountList().add((double)instagram.getUser().getId());
 
         post.save(new SyncanoCallback<SyncanoObject>() {
             @Override
@@ -222,7 +223,7 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
 
             @Override
             public void failure(Response<SyncanoObject> response) {
-
+                Utilities.showToast(getApplicationContext(), response.getError());
             }
         });
 
@@ -234,7 +235,7 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
 
             @Override
             public void failure(Response<Trace> response) {
-
+                Utilities.showToast(getApplicationContext(), response.getError());
             }
         });
     }

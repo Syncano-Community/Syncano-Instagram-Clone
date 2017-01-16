@@ -23,7 +23,7 @@ import com.solid9studio.instagram.application.Instagram;
 import com.solid9studio.instagram.constant.Constants;
 
 /**
- * Created by Sebastian on 2017-01-12.
+ * Service that is called once PUSH token is changed in order to update it.
  */
 
 public class MyInstanceIDListenerService extends InstanceIDListenerService {

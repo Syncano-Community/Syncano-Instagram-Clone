@@ -1,20 +1,22 @@
 package com.solid9studio.instagram.model;
 
 import com.solid9studio.instagram.user.InstagramProfile;
-import com.syncano.library.annotation.SyncanoClass;
-import com.syncano.library.annotation.SyncanoField;
+
 import com.syncano.library.data.SyncanoFile;
 import com.syncano.library.data.SyncanoObject;
+import com.syncano.library.annotation.SyncanoClass;
+import com.syncano.library.annotation.SyncanoField;
 
 import java.util.List;
 
 /**
- * Created by Sebastian on 2017-01-10.
+ * Class that corresponds to data structure on Syncano server side.
  */
 
-@SyncanoClass(name = "instapost")
-public class InstaPost extends SyncanoObject {
+@SyncanoClass(name = InstagramPost.CLASS_INSTAGRAM_POST)
+public class InstagramPost extends SyncanoObject {
 
+    public static final String CLASS_INSTAGRAM_POST= "instapost";
     public static final String FIELD_SUMMARY = "summary";
     public static final String FIELD_POST_IMAGE = "post_image";
     public static final String FIELD_POST_OWNER = "post_owner_id";
@@ -30,7 +32,7 @@ public class InstaPost extends SyncanoObject {
     private InstagramProfile instagramProfile;
 
     @SyncanoField(name = FIELD_POST_LIKE_USERS)
-    private List<Double> likeCount;
+    private List<Double> likeCountList;
 
     public SyncanoFile getPostImage() {
         return postImage;
@@ -56,13 +58,21 @@ public class InstaPost extends SyncanoObject {
         this.instagramProfile = instagramProfile;
     }
 
+    public List<Double> getLikeCountList() {
+        return likeCountList;
+    }
+
+    public void setLikeCountList(List<Double> likeCountList) {
+        this.likeCountList = likeCountList;
+    }
+
     public boolean isLikedByMe()
     {
-        if(getLikeCount() != null)
+        if(getLikeCountList() != null)
         {
-            for(int i = 0; i <getLikeCount().size(); i++)
+            for(int i = 0; i < getLikeCountList().size(); i++)
             {
-                int toCompare = getLikeCount().get(i).intValue();
+                int toCompare = getLikeCountList().get(i).intValue();
                 int id = getInstagramProfile().getId();
 
                 if(id == toCompare)
@@ -72,13 +82,5 @@ public class InstaPost extends SyncanoObject {
             }
         }
         return false;
-    }
-
-    public List<Double> getLikeCount() {
-        return likeCount;
-    }
-
-    public void setLikeCount(List<Double> likeCount) {
-        this.likeCount = likeCount;
     }
 }

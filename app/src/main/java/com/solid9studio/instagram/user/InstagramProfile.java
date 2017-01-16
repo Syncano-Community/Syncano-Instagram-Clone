@@ -7,7 +7,7 @@ import com.syncano.library.data.Profile;
 import com.syncano.library.data.SyncanoFile;
 
 /**
- * Created by sebastian on 2016-11-28.
+ * Class that corresponds to data structure on Syncano server side.
  */
 
 @SyncanoClass(name = Constants.USER_PROFILE_CLASS_NAME)

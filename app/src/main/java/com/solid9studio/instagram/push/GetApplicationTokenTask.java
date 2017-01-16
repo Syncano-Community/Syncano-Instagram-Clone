@@ -5,10 +5,9 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.constant.Constants;
-import com.solid9studio.instagram.user.InstagramProfile;
 import com.solid9studio.instagram.user.InstagramUser;
+
 import com.syncano.library.Syncano;
 import com.syncano.library.api.Response;
 import com.syncano.library.data.PushDevice;
@@ -19,15 +18,15 @@ import com.google.android.gms.iid.InstanceID;
 import java.io.IOException;
 
 /**
- * Created by Sebastian on 2017-01-12.
+ * This class is used to obtain token for PUSH messages.
  */
 
 public class GetApplicationTokenTask extends AsyncTask<Void, Void, String> {
+
     private static final String TAG = MyGcmListenerService.class.getSimpleName();
+
     private Context ctx;
     private InstagramUser profile;
-
-
 
     public GetApplicationTokenTask(Context ctx, InstagramUser profile) {
         this.ctx = ctx;
@@ -51,8 +50,9 @@ public class GetApplicationTokenTask extends AsyncTask<Void, Void, String> {
             return "";
         }
 
-        // save token
+        // save token in preferences
         PreferenceManager.getDefaultSharedPreferences(ctx).edit().putString(Constants.TOKEN, token).apply();
+
         profile.getProfile().setPushUrl(token);
         profile.getProfile().save();
 
@@ -62,7 +62,7 @@ public class GetApplicationTokenTask extends AsyncTask<Void, Void, String> {
     private String getGCMTokenFromGoogle() {
         try {
             InstanceID instanceID = InstanceID.getInstance(ctx);
-            return instanceID.getToken(ctx.getString(R.string.gcm_defaultSenderId), GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+            return instanceID.getToken(Constants.GCM_DEFAULT_SENDER_ID, GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
         } catch (IOException e) {
             e.printStackTrace();
         }

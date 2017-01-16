@@ -89,11 +89,6 @@ public class RegisterActivity extends BaseActivity {
         });
 
         Utilities.setSelectPictureListener(this, mUserAvatar);
-        mNameView.setText("ASDASDASD");
-        mSurnameView.setText("pppppasdsadsa");
-        mEmailView.setText("XXXXXXXX@XX");
-        mPasswordView.setText("DDDDDDD");
-        mConfirmPasswordView.setText("DDDDDDD");
     }
 
     @OnClick(R.id.register_button)
@@ -164,6 +159,7 @@ public class RegisterActivity extends BaseActivity {
 
                 @Override
                 public void failure(Response<AbstractUser> response) {
+                    Utilities.showToast(getApplicationContext(), response.getError());
                     showProgress(false);
                 }
             });
@@ -171,12 +167,10 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
 

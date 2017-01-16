@@ -30,5 +30,4 @@
     <string name="action_save">Save</string>
     <string name="facebook_app_id">1792447224340102</string>
     <string name="notification_title">Syncano Instagram Clone</string>
-    <string name="gcm_defaultSenderId">234266769369</string>
 </resources>

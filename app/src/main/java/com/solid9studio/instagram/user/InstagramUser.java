@@ -4,13 +4,7 @@ import com.syncano.library.choice.SocialAuthBackend;
 import com.syncano.library.data.AbstractUser;
 import com.syncano.library.data.SyncanoFile;
 
-/**
- * Created by sebastian on 2016-11-28.
- */
-
 public class InstagramUser extends AbstractUser<InstagramProfile> {
-
-    public InstagramUser(String login, String pass) { super(login, pass); }
 
     public InstagramUser(SocialAuthBackend socialAuthBackend, String authToken) { super(socialAuthBackend, authToken); }
 

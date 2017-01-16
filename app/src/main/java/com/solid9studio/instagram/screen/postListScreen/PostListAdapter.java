@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.solid9studio.instagram.Row;
-import com.solid9studio.instagram.model.InstaPost;
+import com.solid9studio.instagram.model.InstagramPost;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private static final int TYPE_POST = 1;
 
-    private ArrayList<InstaPost> posts = new ArrayList<>();
+    private ArrayList<InstagramPost> posts = new ArrayList<>();
     private ArrayList<Row> rows = new ArrayList<>();
 
     @Override
@@ -49,7 +49,7 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return rows.size();
     }
 
-    public void setData(List<InstaPost> newPosts) {
+    public void setData(List<InstagramPost> newPosts) {
         if (newPosts != null) {
             posts = new ArrayList<>(newPosts);
         } else {
@@ -63,7 +63,7 @@ public class PostListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         ArrayList<Row> newRows = new ArrayList<>();
 
-        for (InstaPost post : posts) {
+        for (InstagramPost post : posts) {
             newRows.add(new PostRow(post.getId(), post));
         }
 

@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.Row;
-import com.solid9studio.instagram.model.InstaComment;
+import com.solid9studio.instagram.model.InstagramComment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,9 +19,9 @@ import butterknife.ButterKnife;
 
 public class CommentRow extends Row {
 
-    private InstaComment comment;
+    private InstagramComment comment;
 
-    public CommentRow(long id, InstaComment comment) {
+    public CommentRow(long id, InstagramComment comment) {
         super(id);
         this.comment = comment;
     }

@@ -10,8 +10,7 @@ import android.widget.TextView;
 
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.Row;
-import com.solid9studio.instagram.model.InstaPost;
-import com.solid9studio.instagram.screen.postScreen.PostActivity;
+import com.solid9studio.instagram.model.InstagramPost;
 import com.solid9studio.instagram.view.SquareImageView;
 import com.squareup.picasso.Picasso;
 
@@ -27,9 +26,9 @@ import butterknife.ButterKnife;
 public class PostRow extends Row {
 
     public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm");
-    private InstaPost post;
+    private InstagramPost post;
 
-    public PostRow(long id, InstaPost post) {
+    public PostRow(long id, InstagramPost post) {
         super(id);
         this.post = post;
     }
@@ -53,9 +52,9 @@ public class PostRow extends Row {
 
         int likesCount = 0;
 
-        if(post.getLikeCount() != null)
+        if(post.getLikeCountList() != null)
         {
-            likesCount = post.getLikeCount().size();
+            likesCount = post.getLikeCountList().size();
         }
 
         setLikes(h, likesCount, post.isLikedByMe());

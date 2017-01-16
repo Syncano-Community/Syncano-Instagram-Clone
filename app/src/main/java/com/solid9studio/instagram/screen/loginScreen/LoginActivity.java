@@ -37,6 +37,7 @@ import com.solid9studio.instagram.screen.postListScreen.PostListActivity;
 import com.solid9studio.instagram.screen.registerScreen.RegisterActivity;
 import com.solid9studio.instagram.user.InstagramProfile;
 import com.solid9studio.instagram.user.InstagramUser;
+import com.solid9studio.instagram.utilities.Utilities;
 import com.syncano.library.api.Response;
 import com.syncano.library.callbacks.SyncanoCallback;
 import com.syncano.library.choice.SocialAuthBackend;
@@ -60,7 +61,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that offers login via email/password or via facebook.
  */
 public class LoginActivity extends BaseActivity {
 
@@ -107,6 +108,7 @@ public class LoginActivity extends BaseActivity {
             }
         });
 
+        // This is used for obtaining facebook data
         mLoginButton.setReadPermissions(Arrays.asList(
                 "public_profile", "email", "user_birthday", "user_friends"));
         mLoginButton.registerCallback(callbackManager, callback);
@@ -198,6 +200,7 @@ public class LoginActivity extends BaseActivity {
 
                 @Override
                 public void failure(Response<AbstractUser> response) {
+                    Utilities.showToast(getApplicationContext(), response.getError());
                     showProgress(false);
                 }
             });
@@ -232,7 +235,7 @@ public class LoginActivity extends BaseActivity {
 
                     @Override
                     public void failure( Response<SyncanoObject> response) {
-
+                        Utilities.showToast(getApplicationContext(), response.getError());
                     }
                 });
 
@@ -240,18 +243,17 @@ public class LoginActivity extends BaseActivity {
 
             @Override
             public void failure(Response<AbstractUser> response) {
+                Utilities.showToast(getApplicationContext(), response.getError());
                 showProgress(false);
             }
         });
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
 
@@ -317,7 +319,6 @@ public class LoginActivity extends BaseActivity {
         public void onSuccess(LoginResult loginResult) {
             final AccessToken accessToken = loginResult.getAccessToken();
 
-
             // Facebook Email address
             GraphRequest request = GraphRequest.newMeRequest(
                     loginResult.getAccessToken(),
@@ -333,10 +334,6 @@ public class LoginActivity extends BaseActivity {
                                 String profilePicUrl = json.getJSONObject("picture").getJSONObject("data").getString("url");
 
                                  new AttemptLoginSocial().execute(accessToken.getToken(), email, name, surname, profilePicUrl);
-
-
-                               // attemptLoginSocial(accessToken.getToken(), email, name, surname, profilePicUrl);
-
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -361,8 +358,6 @@ public class LoginActivity extends BaseActivity {
     };
 
     class AttemptLoginSocial extends AsyncTask<String, Void, Void> {
-
-        private Exception exception;
 
         @Override
         protected Void doInBackground(String... params) {
