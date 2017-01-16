@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,6 +14,7 @@ import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.application.Instagram;
 import com.solid9studio.instagram.constant.Constants;
 import com.solid9studio.instagram.screen.loginScreen.LoginActivity;
+import com.solid9studio.instagram.screen.postListScreen.PostListActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,6 +65,9 @@ public class SettingsActivity extends BaseActivity {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(Constants.USE_PUSH, notificationsSwitch.isChecked());
         editor.commit();
+
+        Intent intent = new Intent(this, PostListActivity.class);
+        startActivity(intent);
     }
 
     @OnClick(R.id.sign_out_button)

@@ -166,9 +166,6 @@ public class Utilities {
                 Utilities.showToast(context, response.getError());
             }
         });
-
-
-
     }
 
     public static void notifyCommentedPost(final Context context, final InstagramPost post, final int userID) {
