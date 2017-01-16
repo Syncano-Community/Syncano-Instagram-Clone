@@ -3,6 +3,7 @@ package com.solid9studio.instagram.utilities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -127,6 +128,11 @@ public class Utilities {
 
     public static void notifyLikedPost(final Context context, final InstagramPost post, final int userID, ImageView likeImageView, TextView likeText)
     {
+        if(checkIfCanPushMessage(context) == false)
+        {
+            return;
+        }
+
         JsonObject params = new JsonObject();
         params.addProperty(FIELD_PUSH_TARGET, post.getInstagramProfile().getPushUrl());
         params.addProperty(FIELD_PUSH_MESSAGE, "You've got new like!");
@@ -166,6 +172,11 @@ public class Utilities {
 
     public static void notifyCommentedPost(final Context context, final InstagramPost post, final int userID) {
 
+        if(checkIfCanPushMessage(context) == false)
+        {
+            return;
+        }
+
         JsonObject params = new JsonObject();
         params.addProperty(FIELD_PUSH_TARGET, post.getInstagramProfile().getPushUrl());
         params.addProperty(FIELD_PUSH_MESSAGE, "You've got new comment!");
@@ -181,7 +192,11 @@ public class Utilities {
                 Utilities.showToast(context, response.getError());
             }
         });
+    }
 
-
+    private static boolean checkIfCanPushMessage(Context context)
+    {
+        SharedPreferences sharedPref = context.getSharedPreferences(Constants.USE_PUSH, Context.MODE_PRIVATE);
+        return sharedPref.getBoolean(Constants.USE_PUSH, true);
     }
 }

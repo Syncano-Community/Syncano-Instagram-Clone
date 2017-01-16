@@ -2,6 +2,7 @@ package com.solid9studio.instagram.screen.settingsScreen;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,6 +13,7 @@ import android.widget.Switch;
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.application.Instagram;
+import com.solid9studio.instagram.constant.Constants;
 import com.solid9studio.instagram.screen.loginScreen.LoginActivity;
 
 import butterknife.BindView;
@@ -33,6 +35,9 @@ public class SettingsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
+
+        SharedPreferences sharedPref = getSharedPreferences(Constants.USE_PUSH, Context.MODE_PRIVATE);
+        notificationsSwitch.setChecked(sharedPref.getBoolean(Constants.USE_PUSH, true));
     }
 
     @Override
@@ -54,7 +59,12 @@ public class SettingsActivity extends BaseActivity {
     }
 
     public void saveChanges() {
-        Log.d("SettingsActivity", "saveChanges notifications: " + notificationsSwitch.isChecked());
+
+        SharedPreferences sharedPref = getSharedPreferences(
+               Constants.USE_PUSH, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(Constants.USE_PUSH, notificationsSwitch.isChecked());
+        editor.commit();
     }
 
     @OnClick(R.id.sign_out_button)
