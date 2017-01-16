@@ -26,6 +26,7 @@ import com.solid9studio.instagram.screen.createPostScreen.CreatePostActivity;
 import com.solid9studio.instagram.screen.postScreen.PostActivity;
 import com.solid9studio.instagram.screen.profileScreen.ProfileActivity;
 import com.solid9studio.instagram.screen.settingsScreen.SettingsActivity;
+import com.solid9studio.instagram.user.InstagramUser;
 import com.solid9studio.instagram.utilities.Utilities;
 import com.syncano.library.Syncano;
 import com.syncano.library.api.Response;
@@ -35,6 +36,7 @@ import com.syncano.library.callbacks.SyncanoListCallback;
 import com.syncano.library.choice.SortOrder;
 import com.syncano.library.data.SyncanoObject;
 import com.syncano.library.data.Trace;
+import com.syncano.library.simple.RequestBuilder;
 
 import java.util.List;
 
@@ -45,6 +47,7 @@ import butterknife.OnClick;
 public class PostListActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String FIELD_TARGET = "target";
+    private static final String EXTRA_USER_FILTER = "user_id";
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -59,9 +62,17 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
     RecyclerView recyclerView;
 
     private PostListAdapter adapter = new PostListAdapter();
+    private Syncano syncano;
+    private int userIdFilter; // Used to list only this user posts.
 
     public static Intent getActivityIntent(Context context) {
         Intent intent = new Intent(context, PostListActivity.class);
+        return intent;
+    }
+
+    public static Intent getActivityIntent(Context context, int userIdFilter) {
+        Intent intent = new Intent(context, PostListActivity.class);
+        intent.putExtra(EXTRA_USER_FILTER, userIdFilter);
         return intent;
     }
 
@@ -71,6 +82,12 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
         setContentView(R.layout.activity_post_list);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+
+        // Filter by user
+        userIdFilter = getIntent().getIntExtra(EXTRA_USER_FILTER, 0);
+
+        if (userIdFilter > 0)
+            setTitle(R.string.action_my_posts);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -82,6 +99,7 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
         });
 
         Instagram instagram = (Instagram) this.getApplication();
+        syncano = instagram.getSyncanoInstance();
         String token = PreferenceManager.getDefaultSharedPreferences(this).getString(Constants.TOKEN, "");
 
         if (token.isEmpty()) {
@@ -101,6 +119,9 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_my_posts:
+                goToMyPosts();
+                return true;
             case R.id.action_profile:
                 goToProfile();
                 return true;
@@ -118,8 +139,13 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void downloadPosts() {
+        RequestBuilder<InstagramPost> request = Syncano.please(InstagramPost.class);
 
-        Syncano.please(InstagramPost.class).orderBy(SyncanoObject.FIELD_CREATED_AT, SortOrder.DESCENDING).get(new SyncanoListCallback<InstagramPost>() {
+        if (userIdFilter > 0) {
+            request.where().eq(InstagramPost.FIELD_POST_OWNER, userIdFilter);
+        }
+
+        request.orderBy(SyncanoObject.FIELD_CREATED_AT, SortOrder.DESCENDING).get(new SyncanoListCallback<InstagramPost>() {
               @Override
               public void success(ResponseGetList<InstagramPost> response, List<InstagramPost> result) {
 
@@ -148,6 +174,13 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
 
     public void goToProfile() {
         startActivity(ProfileActivity.getActivityIntent(this));
+    }
+
+    public void goToMyPosts() {
+        InstagramUser user = (InstagramUser)syncano.getUser();
+        if (user != null && user.getId() > 0) {
+            startActivity(getActivityIntent(this, user.getId()));
+        }
     }
 
     private void displayPosts(List<InstagramPost> posts) {
