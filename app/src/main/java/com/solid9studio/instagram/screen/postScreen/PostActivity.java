@@ -205,12 +205,19 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
         Instagram instagram = (Instagram) this.getApplication();
 
         if (v.getId() == R.id.like_container) {
-            if (post != null && post.isLikedByMe(instagram.getUser().getProfile().getId()) == false) {
+            if (post != null) {
 
-                Utilities.notifyLikedPost(this, post
-                        ,instagram.getUser().getProfile().getId()
-                        ,(ImageView) v.findViewById(R.id.like_icon)
-                        ,(TextView) v.findViewById(R.id.like_text));
+                if(post.isLikedByMe(instagram.getUser().getProfile().getId()))
+                {
+                    Utilities.showToast(this, "You already liked this post!");
+                }
+                else
+                {
+                    Utilities.notifyLikedPost(this, post
+                            , instagram.getUser().getProfile().getId()
+                            , (ImageView) v.findViewById(R.id.like_icon)
+                            , (TextView) v.findViewById(R.id.like_text));
+                }
             }
         }
     }
