@@ -65,18 +65,14 @@ public class SettingsActivity extends BaseActivity {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(Constants.USE_PUSH, notificationsSwitch.isChecked());
         editor.commit();
-
-        Intent intent = new Intent(this, PostListActivity.class);
-        startActivity(intent);
+        onBackPressed();
     }
 
     @OnClick(R.id.sign_out_button)
     public void signOut() {
         ((Instagram) this.getApplication()).getSyncanoInstance().setUser(null);
         Intent intent = new Intent(this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-
-        this.finish();
     }
 }

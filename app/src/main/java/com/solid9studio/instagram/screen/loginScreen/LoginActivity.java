@@ -295,9 +295,8 @@ public class LoginActivity extends BaseActivity {
 
     private void goToPostList() {
         Intent intent = PostListActivity.getActivityIntent(this);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-        this.finish();
     }
 
     private void goToRegister() {
