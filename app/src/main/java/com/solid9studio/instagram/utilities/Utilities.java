@@ -64,8 +64,21 @@ public class Utilities {
                 if (Build.VERSION.SDK_INT < 19) {
 
                     String selectedImagePath = getPath(context, selectedImageUri);
-                    Bitmap bitmap = BitmapFactory.decodeFile(selectedImagePath);
-                    imageView.setImageBitmap(bitmap);
+                    Bitmap image = BitmapFactory.decodeFile(selectedImagePath);
+                    imageView.setImageBitmap(image);
+
+                    if(image.getWidth() >= 4128)
+                    {
+                        showToast(context, "Image width is too large and can't be displayed.");
+                    }
+
+                    else if(image.getHeight() >= 2322)
+                    {
+                        showToast(context, "Image height is too large and can't be displayed.");
+                    }
+
+                    Uri uri = data.getData();
+                    return new File(getPath(context, uri));
                 }
                 else {
                     ParcelFileDescriptor parcelFileDescriptor;

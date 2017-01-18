@@ -2,6 +2,9 @@ package com.solid9studio.instagram.screen.profileScreen;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import com.solid9studio.instagram.BaseActivity;
 import com.solid9studio.instagram.R;
 import com.solid9studio.instagram.application.Instagram;
+import com.solid9studio.instagram.model.InstagramPost;
 import com.solid9studio.instagram.user.InstagramProfile;
 import com.solid9studio.instagram.user.InstagramUser;
 import com.solid9studio.instagram.utilities.Utilities;
@@ -23,6 +27,7 @@ import com.syncano.library.callbacks.SyncanoCallback;
 import com.syncano.library.data.SyncanoFile;
 import com.syncano.library.data.SyncanoObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import butterknife.BindView;
@@ -67,7 +72,9 @@ public class ProfileActivity extends BaseActivity {
         mUpdateProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateProfile();
+
+                mProgressView.setVisibility(View.VISIBLE);
+               new UpdateProfile().execute(mUsernameView.getText().toString(), user.getProfile().getSurname());
             }
         });
 
@@ -126,5 +133,52 @@ public class ProfileActivity extends BaseActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         avatarFile = Utilities.onSelectedPicutreFromGallery(this, requestCode, resultCode, data, mAvatarView);
+    }
+
+    public Bitmap getBitmapDrawable()
+    {
+        return ((BitmapDrawable) mAvatarView.getDrawable()).getBitmap();
+    }
+
+    public class UpdateProfile extends AsyncTask<String, Void, Void> {
+
+        private Response<InstagramProfile> response;
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+            user.getProfile().setName(params[0]);
+            user.getProfile().setSurname(params[1]);
+
+            Bitmap bitmap = getBitmapDrawable();
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+
+            user.getProfile().setAvatar(new SyncanoFile(byteArray));
+
+            response = user.getProfile().save();
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+            if(response.isSuccess()) {
+                user.setProfile(response.getData());
+                syncano.setUser(user);
+
+                mProgressView.setVisibility(View.GONE);
+            }
+
+            else {
+                Utilities.showToast(getApplicationContext(), response.getError());
+                mProgressView.setVisibility(View.GONE);
+            }
+
+            super.onPostExecute(aVoid);
+        }
     }
 }

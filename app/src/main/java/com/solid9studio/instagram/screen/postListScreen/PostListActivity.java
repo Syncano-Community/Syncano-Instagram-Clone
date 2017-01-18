@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.solid9studio.instagram.BaseActivity;
@@ -57,6 +58,9 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
 
     @BindView(R.id.post_list)
     RecyclerView recyclerView;
+
+    @BindView(R.id.progressBarLoadPostList)
+    ProgressBar progressBarView;
 
     private PostListAdapter adapter = new PostListAdapter(this);
     private Syncano syncano;
@@ -136,6 +140,7 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void downloadPosts() {
+        progressBarView.setVisibility(View.VISIBLE);
         RequestBuilder<InstagramPost> request = Syncano.please(InstagramPost.class);
 
         if (userIdFilter > 0) {
@@ -152,6 +157,7 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
               @Override
               public void failure(ResponseGetList<InstagramPost> response) {
                   Utilities.showToast(getApplicationContext(), response.getError());
+                  progressBarView.setVisibility(View.GONE);
             }
           });
     }
@@ -175,12 +181,13 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
 
     public void goToMyPosts() {
         InstagramUser user = (InstagramUser)syncano.getUser();
-        if (user != null && user.getId() > 0) {
-            startActivity(getActivityIntent(this, user.getId()));
+        if (user != null && user.getProfile() != null && user.getProfile().getId() > 0) {
+            startActivity(getActivityIntent(this, user.getProfile().getId()));
         }
     }
 
     private void displayPosts(List<InstagramPost> posts) {
+        progressBarView.setVisibility(View.GONE);
         swipeRefreshLayout.setRefreshing(false);
         adapter.setData(posts);
         adapter.notifyDataSetChanged();
@@ -198,7 +205,10 @@ public class PostListActivity extends BaseActivity implements View.OnClickListen
 
             for(int i = 0; i <result.size(); i++)
             {
-               result.get(i).getInstagramProfile().fetch();
+                if(result.get(i).getInstagramProfile() != null)
+                {
+                    result.get(i).getInstagramProfile().fetch();
+                }
             }
 
             return result;

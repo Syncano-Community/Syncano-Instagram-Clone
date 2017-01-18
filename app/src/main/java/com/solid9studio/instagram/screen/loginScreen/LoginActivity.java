@@ -121,8 +121,8 @@ public class LoginActivity extends BaseActivity {
         mLoginButton.registerCallback(callbackManager, callback);
 
 
-        mEmailView.setText("test@test.pl");
-        mPasswordView.setText("syncano");
+       // mEmailView.setText("test@test.pl");
+       // mPasswordView.setText("syncano");
         user = new InstagramUser();
     }
 

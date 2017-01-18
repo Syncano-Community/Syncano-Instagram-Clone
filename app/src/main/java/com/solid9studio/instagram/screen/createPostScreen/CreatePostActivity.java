@@ -2,8 +2,11 @@ package com.solid9studio.instagram.screen.createPostScreen;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,9 +24,13 @@ import com.solid9studio.instagram.screen.postListScreen.PostListActivity;
 import com.solid9studio.instagram.user.InstagramProfile;
 import com.solid9studio.instagram.utilities.Utilities;
 
+import com.squareup.picasso.Picasso;
 import com.syncano.library.api.Response;
+import com.syncano.library.callbacks.SyncanoCallback;
 import com.syncano.library.data.SyncanoFile;
+import com.syncano.library.data.SyncanoObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import butterknife.BindView;
@@ -46,6 +53,8 @@ public class CreatePostActivity extends BaseActivity {
     private Menu menu;
 
     private File avatarFile;
+
+    private boolean isUploading;
 
     public static Intent getActivityIntent(Context context) {
         Intent intent = new Intent(context, CreatePostActivity.class);
@@ -72,7 +81,9 @@ public class CreatePostActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_share:
-                sharePost();
+                if(isUploading == false) {
+                    sharePost();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -83,7 +94,7 @@ public class CreatePostActivity extends BaseActivity {
         menu.getItem(0).setEnabled(false);
         progressBarSharePost.setVisibility(View.VISIBLE);
 
-        new SharePicture(this).execute(imageSummaryText.getText().toString());
+        new SharePicture().execute(imageSummaryText.getText().toString());
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -105,25 +116,32 @@ public class CreatePostActivity extends BaseActivity {
         startActivity(intent);
     }
 
+    public Bitmap getBitmapDrawable()
+    {
+        return ((BitmapDrawable) mImageView.getDrawable()).getBitmap();
+    }
+
     public class SharePicture extends AsyncTask<String, Void, Void> {
 
-        private CreatePostActivity parent;
         private Response<InstagramPost> response;
-
-        public SharePicture(CreatePostActivity parent)
-        {
-            this.parent = parent;
-        }
 
         @Override
         protected Void doInBackground(String... params) {
 
-            Instagram instagram = ((Instagram) parent.getApplication());
+            isUploading = true;
+            Instagram instagram = ((Instagram) getApplication());
             InstagramProfile instagramProfile = instagram.getUser().getProfile();
             InstagramPost instaPost = new InstagramPost();
 
             instaPost.setPostSummary(params[0]);
-            instaPost.setPostImage(new SyncanoFile(avatarFile));
+
+            Bitmap bitmap = getBitmapDrawable();
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+
+            instaPost.setPostImage(new SyncanoFile(byteArray));
             instaPost.setInstagramProfile(instagramProfile);
 
             response = instaPost.save();
@@ -142,9 +160,35 @@ public class CreatePostActivity extends BaseActivity {
                 Utilities.showToast(getApplicationContext(), response.getError());
             }
 
+            isUploading = false;
             menu.getItem(0).setEnabled(true);
 
             super.onPostExecute(aVoid);
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
+                && keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+
+            onBackPressed();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+      if(isUploading)
+      {
+          return;
+      }
+        else {
+          super.onBackPressed();
+      }
+
     }
 }

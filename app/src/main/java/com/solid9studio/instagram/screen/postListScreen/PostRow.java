@@ -51,8 +51,16 @@ public class PostRow extends Row {
         h.text.setText(post.getPostSummary());
         h.author.setText(post.getInstagramProfile().getName());
         h.creationDate.setText(SDF.format(post.getCreatedAt()));
-        Picasso.with(h.topView.getContext()).load(post.getPostImage().getLink()).into(h.image);
-        Picasso.with(h.topView.getContext()).load(post.getInstagramProfile().getAvatar().getLink()).into(h.userAvatarImage);
+
+        if(post.getPostImage() != null && post.getPostImage().getLink() != null)
+        {
+            Picasso.with(h.topView.getContext()).load(post.getPostImage().getLink()).into(h.image);
+        }
+
+        if(post.getInstagramProfile().getAvatar() != null && post.getInstagramProfile().getAvatar().getLink() != null)
+        {
+            Picasso.with(h.topView.getContext()).load(post.getInstagramProfile().getAvatar().getLink()).into(h.userAvatarImage);
+        }
 
         int likesCount = 0;
 

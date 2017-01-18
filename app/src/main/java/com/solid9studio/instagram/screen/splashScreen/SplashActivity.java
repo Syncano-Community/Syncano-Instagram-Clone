@@ -31,6 +31,7 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void run()
             {
+
                 if (!checkPlayServices()) {
                     Utilities.showToast(getApplicationContext(), "Your device does not have Google Play Services Installed! It can't receive PUSH notifications!!");
                 }

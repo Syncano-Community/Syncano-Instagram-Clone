@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,6 +34,7 @@ import com.syncano.library.data.AbstractUser;
 import com.syncano.library.data.SyncanoFile;
 import com.syncano.library.data.SyncanoObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import butterknife.BindView;
@@ -206,6 +209,11 @@ public class RegisterActivity extends BaseActivity {
         avatarFile = Utilities.onSelectedPicutreFromGallery(this, requestCode, resultCode, data, mUserAvatar);
     }
 
+    public Bitmap getBitmapDrawable()
+    {
+        return ((BitmapDrawable) mUserAvatar.getDrawable()).getBitmap();
+    }
+
     public class RegisterUserTask extends AsyncTask<String, Void, Void> {
 
         private InstagramUser newUser;
@@ -223,7 +231,14 @@ public class RegisterActivity extends BaseActivity {
             {
                 newUser.getProfile().setName(params[2]);
                 newUser.getProfile().setSurname(params[3]);
-                newUser.getProfile().setAvatar(new SyncanoFile(avatarFile));
+
+                Bitmap bitmap = getBitmapDrawable();
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+
+                newUser.getProfile().setAvatar(new SyncanoFile(byteArray));
 
                 Response<InstagramProfile> responseSaveProfile = newUser.getProfile().save();
 
