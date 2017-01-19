@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -161,6 +162,12 @@ public class PostActivity extends BaseActivity implements View.OnClickListener {
             instaComment.setInstagramPost(post);
             instaComment.setText(commentEditText.getText().toString());
             commentEditText.setText(null);
+
+            View view = this.getCurrentFocus();
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
 
             instaComment.save(new SyncanoCallback<SyncanoObject>() {
                 @Override
