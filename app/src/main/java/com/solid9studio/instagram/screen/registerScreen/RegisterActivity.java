@@ -68,8 +68,6 @@ public class RegisterActivity extends BaseActivity {
     @BindView(R.id.user_avatar)
     ImageView mUserAvatar;
 
-    private File avatarFile;
-
     public static Intent getActivityIntent(Context context) {
         Intent intent = new Intent(context, RegisterActivity.class);
         return intent;
@@ -206,7 +204,7 @@ public class RegisterActivity extends BaseActivity {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        avatarFile = Utilities.onSelectedPicutreFromGallery(this, requestCode, resultCode, data, mUserAvatar);
+        Utilities.onSelectedPicutreFromGallery(this, requestCode, resultCode, data, mUserAvatar);
     }
 
     public Bitmap getBitmapDrawable()
