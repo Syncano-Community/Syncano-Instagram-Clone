@@ -1,0 +1,20 @@
+var Syncano = require('syncano');
+
+var connection = Syncano({ accountKey: 'YOUR_ACCOUNT_KEY' });
+var GCMDevice = connection.GCMDevice;
+var player_cell_id = ARGS.target;
+var message_from_app = ARGS.message;
+
+var query = {
+ registration_id: player_cell_id,
+ instanceName: 'instagram-clone'
+};
+
+var message = {
+  environment: 'development',
+  data: {
+    message: message_from_app
+  }
+};
+
+GCMDevice.please().sendMessage(query, message).then((res) => console.log("success"));
